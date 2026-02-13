@@ -1,0 +1,11 @@
+# #############################################################################
+# [운영계 접속 정보 설정]
+# 이 파일을 terraform.tfvars로 복사한 후 실제 값을 입력하세요.
+# 주의: terraform.tfvars 파일은 절대 Git에 올리지 마세요! (.gitignore 확인)
+# #############################################################################
+
+tenancy_ocid     = "ocid1.tenancy.oc1..[YOUR_TENANCY_OCID]"
+user_ocid        = "ocid1.user.oc1..[YOUR_USER_OCID]"
+fingerprint      = "[YOUR_API_KEY_FINGERPRINT]"
+private_key_path = "~/.oci/oci_api_key.pem"
+region           = "ap-chuncheon-1"

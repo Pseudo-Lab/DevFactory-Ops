@@ -1,0 +1,12 @@
+# Terraform artifacts
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# Sensitive variable files
+*.tfvars
+*.tfvars.json
+
+# Logs
+crash.log
+terraform/prod.pem
