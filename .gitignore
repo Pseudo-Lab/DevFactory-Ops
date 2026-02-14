@@ -10,3 +10,7 @@
 # Logs
 crash.log
 terraform/prod.pem
+
+# Planning documents (Local only)
+now.md
+plan.md
