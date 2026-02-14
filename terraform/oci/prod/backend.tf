@@ -5,16 +5,17 @@
 # 2. Customer Secret Key 생성 후 Access/Secret Key 확보
 # #############################################################################
 
-# terraform {
-#   backend "s3" {
-#     bucket   = "terraform-state-prod"
-#     key      = "prod/terraform.tfstate"
-#     region   = "ap-chuncheon-1"
-#     endpoint = "https://[namespace].compat.objectstorage.ap-chuncheon-1.oraclecloud.com"
-#     
-#     skip_region_validation      = true
-#     skip_credentials_validation = true
-#     skip_metadata_api_check     = true
-#     force_path_style            = true
-#   }
-# }
+terraform {
+  backend "oci" {
+    bucket    = "terraform-state-prod"
+    key       = "prod/terraform.tfstate"
+    region    = "ap-chuncheon-1"
+    namespace = "axnda59strvy"
+
+    # Credentials (Backend blocks cannot use variables, so these must be literal or from env)
+    # Alternatively, you can run: 
+    # terraform init -backend-config="tenancy_ocid=..." -backend-config="user_ocid=..." ...
+    # But let's see if it can pick up from terraform.tfvars or env.
+    # Actually, let's use the 'oci' backend which supports OCI CLI config or env vars.
+  }
+}

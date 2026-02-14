@@ -12,5 +12,8 @@ crash.log
 terraform/prod.pem
 
 # Planning documents (Local only)
+.agent/
+docs/
 now.md
 plan.md
+state.json
