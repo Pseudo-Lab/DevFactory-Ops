@@ -54,3 +54,9 @@ variable "k3s_api_ip_cidr" {
   description = "CIDR block for K3s API Server (Antigravity Remote)"
   type        = string
 }
+
+variable "k3s_version" {
+  description = "Pinned version of k3s"
+  type        = string
+  default     = "v1.32.12+k3s1"
+}
