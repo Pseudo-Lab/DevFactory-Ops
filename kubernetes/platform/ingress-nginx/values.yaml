@@ -1,0 +1,15 @@
+controller:
+  service:
+    type: NodePort
+    nodePorts:
+      http: 30080
+      https: 30443
+  restoration:
+    enabled: true
+  metrics:
+    enabled: true
+  # OCI LB sends the real IP in the header or via Proxy Protocol
+  # For now, let's keep it simple.
+  config:
+    use-forwarded-headers: "true"
+    compute-full-forwarded-for: "true"
