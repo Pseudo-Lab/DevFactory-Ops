@@ -4,8 +4,13 @@
 
 set -e
 
-# --- Environment Setup ---
-export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
+# --- Directory Awareness ---
+# Ensure the script runs relative to the repository root even if called from elsewhere
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+cd "$REPO_ROOT"
+
+echo "📂 Working directory set to: $REPO_ROOT"
 
 # --- Configuration (Environment Variables) ---
 : "${K3S_VERSION:=v1.32.12+k3s1}"
@@ -51,19 +56,24 @@ curl -sfL https://get.k3s.io | INSTALL_K3S_VERSION="$K3S_VERSION" sh -s - \
 
 # 3. Kubeconfig Standard Setup
 echo "🔑 Setting up standard Kubeconfig (~/.kube/config)..."
-mkdir -p "$HOME/.kube"
-sudo cp /etc/rancher/k3s/k3s.yaml "$HOME/.kube/config"
-sudo chown "$USER:$USER" "$HOME/.kube/config"
-chmod 600 "$HOME/.kube/config"
-export KUBECONFIG="$HOME/.kube/config"
+# Determine the real user's home if run with sudo
+REAL_USER=${SUDO_USER:-$USER}
+USER_HOME=$(eval echo "~$REAL_USER")
+
+mkdir -p "$USER_HOME/.kube"
+sudo cp /etc/rancher/k3s/k3s.yaml "$USER_HOME/.kube/config"
+sudo chown "$REAL_USER:$REAL_USER" "$USER_HOME/.kube/config"
+chmod 600 "$USER_HOME/.kube/config"
+export KUBECONFIG="$USER_HOME/.kube/config"
 
 # 4. Shell Persistence (Aliases & Completion)
 echo "🐚 Configuring shell persistence (.bashrc)..."
-if ! grep -q "kubectl completion bash" "$HOME/.bashrc"; then
-    echo 'source <(kubectl completion bash)' >> "$HOME/.bashrc"
-    echo 'alias k=kubectl' >> "$HOME/.bashrc"
-    echo 'complete -F __start_kubectl k' >> "$HOME/.bashrc"
-    echo "✅ Added kubectl aliases and completion to .bashrc"
+if ! grep -q "KUBECONFIG" "$USER_HOME/.bashrc"; then
+    echo "export KUBECONFIG=\$HOME/.kube/config" >> "$USER_HOME/.bashrc"
+    echo 'source <(kubectl completion bash)' >> "$USER_HOME/.bashrc"
+    echo 'alias k=kubectl' >> "$USER_HOME/.bashrc"
+    echo 'complete -F __start_kubectl k' >> "$USER_HOME/.bashrc"
+    echo "✅ Added KUBECONFIG, aliases, and completion to .bashrc"
 fi
 
 # 5. Wait for k3s to be ready
