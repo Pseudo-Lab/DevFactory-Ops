@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: platform-cert-manager
+  name: cert-manager
   namespace: argocd
 spec:
   project: default
@@ -13,10 +13,13 @@ spec:
       helm:
         valueFiles:
           - $values/infrastructure/base/cert-manager/values.yaml
-    # Git Manifest: ClusterIssuer configuration
+    # Values source for $values interpolation
     - repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
       targetRevision: main
       ref: values
+    # Git Manifest: ClusterIssuer configuration
+    - repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
+      targetRevision: main
       path: infrastructure/overlays/prod
   destination:
     server: https://kubernetes.default.svc
@@ -27,3 +30,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - ServerSideApply=true

@@ -4,15 +4,3 @@ kind: Kustomization
 # 인프라 리소스들 (현재는 설정 파일 위주)
 resources:
   - cert-manager/clusterissuer.yaml
-
-# Argo CD에서 Helm으로 배포할 때 참조할 수 있도록 파일들 유지
-configMapGenerator:
-  - name: ingress-nginx-values
-    files:
-      - ingress-nginx/values.yaml
-  - name: cert-manager-values
-    files:
-      - cert-manager/values.yaml
-  - name: argocd-values
-    files:
-      - argocd/values.yaml

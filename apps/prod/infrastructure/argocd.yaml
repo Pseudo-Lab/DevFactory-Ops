@@ -5,15 +5,18 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://argoproj.github.io/argo-helm
-    chart: argo-cd
-    targetRevision: 9.4.2
-    helm:
-      releaseName: argocd
-      valueFiles:
-        - https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/infrastructure/base/argocd/values.yaml
-        - https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/infrastructure/overlays/prod/argocd/values.yaml
+  sources:
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 9.4.2
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/infrastructure/base/argocd/values.yaml
+          - $values/infrastructure/overlays/prod/argocd/values.yaml
+    - repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
+      targetRevision: main
+      ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: argocd
