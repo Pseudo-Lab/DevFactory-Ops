@@ -22,9 +22,6 @@ resource "oci_core_instance" "prod_instance" {
 
   metadata = {
     ssh_authorized_keys = var.ssh_public_key
-    user_data = base64encode(templatefile("${path.module}/../scripts/install-k3s.sh", {
-      k3s_version = var.k3s_version
-    }))
   }
 
   lifecycle {
