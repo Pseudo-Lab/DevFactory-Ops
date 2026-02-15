@@ -1,9 +1,0 @@
-server:
-  ingress:
-    enabled: true
-    ingressClassName: nginx
-    # Placeholder for ingress host - to be updated once DNS/IP is confirmed
-    # hosts:
-    #   - argocd.example.com
-  extraArgs:
-    - --insecure

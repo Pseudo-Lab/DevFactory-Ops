@@ -1,0 +1,12 @@
+server:
+  ingress:
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/ssl-redirect: "true"
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
+    hosts:
+      - argocd.pseudolab-devfactory.com
+    tls:
+      - secretName: argocd-server-tls
+        hosts:
+          - argocd.pseudolab-devfactory.com

@@ -11,7 +11,7 @@ spec:
     targetRevision: 4.10.1
     helm:
       valueFiles:
-        - https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/kubernetes/platform/ingress-nginx/values.yaml
+        - https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/infrastructure/base/ingress-nginx/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx

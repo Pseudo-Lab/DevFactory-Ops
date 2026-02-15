@@ -12,12 +12,12 @@ spec:
       targetRevision: v1.14.4
       helm:
         valueFiles:
-          - $values/kubernetes/platform/cert-manager/values.yaml
+          - $values/infrastructure/base/cert-manager/values.yaml
     # Git Manifest: ClusterIssuer configuration
     - repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
       targetRevision: main
       ref: values
-      path: kubernetes/platform/cert-manager
+      path: infrastructure/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
