@@ -13,7 +13,10 @@ terraform/prod.pem
 
 # Planning documents (Local only)
 .agent/
-docs/
 now.md
 plan.md
 state.json
+
+# Documentation Strategy
+# Keep the repository minimal for now. README will be organized later.
+docs/
