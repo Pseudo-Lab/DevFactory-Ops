@@ -5,13 +5,19 @@ metadata:
   namespace: argocd
 spec:
   project: default
-  source:
-    repoURL: https://charts.jetstack.io
-    chart: cert-manager
-    targetRevision: v1.14.4
-    helm:
-      valueFiles:
-        - https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/kubernetes/platform/cert-manager/values.yaml
+  sources:
+    # Helm Chart: cert-manager controller
+    - repoURL: https://charts.jetstack.io
+      chart: cert-manager
+      targetRevision: v1.14.4
+      helm:
+        valueFiles:
+          - $values/kubernetes/platform/cert-manager/values.yaml
+    # Git Manifest: ClusterIssuer configuration
+    - repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
+      targetRevision: main
+      ref: values
+      path: kubernetes/platform/cert-manager
   destination:
     server: https://kubernetes.default.svc
     namespace: cert-manager
