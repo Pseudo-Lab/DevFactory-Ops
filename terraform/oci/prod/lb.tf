@@ -21,10 +21,11 @@ resource "oci_load_balancer_backend_set" "prod_lb_bs" {
   health_checker {
     protocol          = "HTTP"
     port              = 30080
-    url_path          = "/"
+    url_path          = "/healthz"
     interval_ms       = 10000
     timeout_in_millis = 3000
     retries           = 3
+    return_code       = 200
   }
 }
 

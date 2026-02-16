@@ -65,7 +65,7 @@ vmagent:
         cpu: 200m
         memory: 256Mi
     remoteWrite:
-      - url: "http://vmsingle-vm.monitoring.svc:8429/api/v1/write"
+      - url: "http://vmsingle-vm.monitoring.svc:8428/api/v1/write"
 
 # Component configurations
 kubeStateMetrics:
