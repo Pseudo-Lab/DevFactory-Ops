@@ -1,0 +1,60 @@
+# Optimized VictoriaMetrics k8s stack for single-node A1 (ARM64)
+
+# Disable alertmanager for now to save memory
+alertmanager:
+  enabled: false
+
+# Grafana is included in the stack, but we can also use it separately.
+# For now, let's keep it in the stack for easier integration.
+grafana:
+  enabled: true
+  ingress:
+    enabled: true
+    ingressClassName: nginx
+    annotations:
+      cert-manager.io/cluster-issuer: letsencrypt-prod
+    hosts:
+      - grafana.pseudolab-devfactory.com
+    tls:
+      - secretName: grafana-tls
+        hosts:
+          - grafana.pseudolab-devfactory.com
+  admin:
+    existingSecret: grafana-admin-creds
+    userKey: admin-user
+    passwordKey: admin-password
+
+# VictoriaMetrics Single node (cheaper than cluster version)
+vmsingle:
+  enabled: true
+  spec:
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1024Mi
+      requests:
+        cpu: 100m
+        memory: 512Mi
+    retentionPeriod: "14d"
+
+# Scrape configurations
+vmagent:
+  enabled: true
+  spec:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    remoteWrite:
+      - url: "http://vmsingle-victoria-metrics-k8s-stack.monitoring.svc:8429/api/v1/write"
+
+# Component configurations
+kubeStateMetrics:
+  enabled: true
+prometheus-node-exporter:
+  enabled: true
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
