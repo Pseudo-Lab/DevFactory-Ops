@@ -19,8 +19,9 @@ resource "oci_load_balancer_backend_set" "prod_lb_bs" {
   policy           = "ROUND_ROBIN"
 
   health_checker {
-    protocol          = "TCP"
+    protocol          = "HTTP"
     port              = 30080
+    url_path          = "/"
     interval_ms       = 10000
     timeout_in_millis = 3000
     retries           = 3
