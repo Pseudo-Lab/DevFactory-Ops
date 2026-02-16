@@ -34,3 +34,8 @@ spec:
         - /data/ca.crt
         - /data/tls.crt
         - /data/tls.key
+    - group: "admissionregistration.k8s.io"
+      kind: ValidatingWebhookConfiguration
+      name: victoria-metrics-victoria-metrics-operator-admission
+      jqPathExpressions:
+        - .webhooks[].clientConfig.caBundle
