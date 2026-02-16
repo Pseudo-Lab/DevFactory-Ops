@@ -75,7 +75,7 @@ prometheus-node-exporter:
   enabled: true
   resources:
     limits:
-      cpu: 100m
+      cpu: 250m
       memory: 128Mi
 
 # k3s specific: These components are internal or bind to localhost, causing 'Down' alerts.
