@@ -70,9 +70,25 @@ vmagent:
 # Component configurations
 kubeStateMetrics:
   enabled: true
+
 prometheus-node-exporter:
   enabled: true
   resources:
     limits:
       cpu: 100m
       memory: 128Mi
+
+# k3s specific: These components are internal or bind to localhost, causing 'Down' alerts.
+kubeScheduler:
+  enabled: false
+kubeControllerManager:
+  enabled: false
+kubeProxy:
+  enabled: false
+kubeEtcd:
+  enabled: false
+
+kubelet:
+  enabled: true
+  serviceMonitor:
+    https: true # k3s kubelet uses https on 10250
