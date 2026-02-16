@@ -1,0 +1,22 @@
+alerting:
+  discord:
+    webhook-url: "${DISCORD_WEBHOOK_URL}"
+endpoints:
+  - name: "DevFactory Main Page"
+    group: "Services"
+    url: "https://www.pseudolab-devfactory.com/"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+  - name: "가짜연구소 수료증 발급 서비스"
+    group: "Services"
+    url: "https://cert.pseudo-lab.com/"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"
+  - name: "JobPT - 지능형 취업 지원 서비스"
+    group: "Services"
+    url: "https://jobpt.pseudolab-devfactory.com/"
+    interval: 5m
+    conditions:
+      - "[STATUS] == 200"

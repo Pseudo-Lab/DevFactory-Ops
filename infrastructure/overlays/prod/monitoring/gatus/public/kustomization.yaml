@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../../../../../base/monitoring/gatus/base
+  - ingress.yaml
+
+# Suffix handled by namePrefix/Suffix
+nameSuffix: -public
+
+commonLabels:
+  app: gatus-public
+
+# Patch Deployment and Service to match the suffix and labels
+configMapGenerator:
+  - name: gatus-config
+    files:
+      - config.yaml=config.yaml

@@ -3,6 +3,8 @@ kind: Kustomization
 
 resources:
   - ../../base
+  - monitoring/gatus/public
+  - monitoring/gatus/gatus-alerting-sealed-secret.yaml
 
 patchesStrategicMerge:
   - cert-manager-email-patch.yaml
