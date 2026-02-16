@@ -4,15 +4,10 @@ kind: Kustomization
 resources:
   - ../../../../../base/monitoring/gatus/base
   - ingress.yaml
+  - configmap.yaml
 
 # Suffix handled by namePrefix/Suffix
 nameSuffix: -public
 
 commonLabels:
   app: gatus-public
-
-# Patch Deployment and Service to match the suffix and labels
-configMapGenerator:
-  - name: gatus-config
-    files:
-      - config.yaml=config.yaml

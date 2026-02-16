@@ -10,7 +10,7 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-  - host: status-preview.pseudolab-devfactory.com
+  - host: status.pseudolab-devfactory.com
     http:
       paths:
       - path: /
@@ -22,5 +22,5 @@ spec:
               number: 80
   tls:
   - hosts:
-    - status-preview.pseudolab-devfactory.com
+    - status.pseudolab-devfactory.com
     secretName: gatus-public-tls
