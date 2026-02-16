@@ -25,3 +25,12 @@ spec:
     syncOptions:
       - CreateNamespace=true
       - ServerSideApply=true
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      name: victoria-metrics-victoria-metrics-operator-validation
+      namespace: monitoring
+      jsonPointers:
+        - /data/ca.crt
+        - /data/tls.crt
+        - /data/tls.key
