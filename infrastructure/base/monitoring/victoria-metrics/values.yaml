@@ -30,6 +30,7 @@ grafana:
     ingressClassName: nginx
     annotations:
       cert-manager.io/cluster-issuer: letsencrypt-prod
+      nginx.ingress.kubernetes.io/backend-protocol: "HTTP"
     hosts:
       - grafana.pseudolab-devfactory.com
     tls:
