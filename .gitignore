@@ -20,3 +20,5 @@ state.json
 # Documentation Strategy
 # Keep the repository minimal for now. README will be organized later.
 docs/
+tfplan
+detailed_plan.txt

@@ -86,7 +86,7 @@ resource "oci_core_security_list" "prod_security_list" {
   ingress_security_rules {
     description = "Nginx Ingress HTTP (NodePort)"
     protocol    = "6"
-    source      = "0.0.0.0/0"
+    source      = "10.0.0.0/24"
     source_type = "CIDR_BLOCK"
     stateless   = false
     tcp_options {
@@ -98,7 +98,7 @@ resource "oci_core_security_list" "prod_security_list" {
   ingress_security_rules {
     description = "Nginx Ingress HTTPS (NodePort)"
     protocol    = "6"
-    source      = "0.0.0.0/0"
+    source      = "10.0.0.0/24"
     source_type = "CIDR_BLOCK"
     stateless   = false
     tcp_options {
