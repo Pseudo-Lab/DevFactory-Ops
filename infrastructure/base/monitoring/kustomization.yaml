@@ -5,3 +5,4 @@ resources:
   # - gatus/public/manifests.yaml
   # - gatus/admin/manifests.yaml
   - victoria-metrics/grafana-admin-sealed-secret.yaml
+  - victoria-metrics/alertmanager-config-sealed-secret.yaml

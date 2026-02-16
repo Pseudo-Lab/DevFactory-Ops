@@ -1,8 +1,24 @@
 # Optimized VictoriaMetrics k8s stack for single-node A1 (ARM64)
 
-# Disable alertmanager for now to save memory
+# Enable Alertmanager with custom config secret
 alertmanager:
-  enabled: false
+  enabled: true
+  spec:
+    configSecret: alertmanager-config
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+
+# vmalert uses alertmanager for notifying
+vmalert:
+  enabled: true
+  spec:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+    # No longer blackhole, it will now talk to alertmanager
 
 # Grafana is included in the stack, but we can also use it separately.
 # For now, let's keep it in the stack for easier integration.
