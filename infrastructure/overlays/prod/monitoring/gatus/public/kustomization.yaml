@@ -9,5 +9,22 @@ resources:
 # Suffix handled by namePrefix/Suffix
 nameSuffix: -public
 
+patches:
+  - target:
+      kind: Deployment
+      name: gatus
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/volumes/0/configMap/name
+        value: gatus-config-public
+  - target:
+      kind: Ingress
+      name: gatus
+    patch: |-
+      - op: replace
+        path: /spec/rules/0/http/paths/0/backend/service/name
+        value: gatus-public
+
 commonLabels:
   app: gatus-public
+  environment: production
