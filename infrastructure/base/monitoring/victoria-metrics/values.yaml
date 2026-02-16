@@ -1,4 +1,5 @@
 # Optimized VictoriaMetrics k8s stack for single-node A1 (ARM64)
+fullnameOverride: vm
 
 # Enable Alertmanager with custom config secret
 alertmanager:
@@ -63,7 +64,7 @@ vmagent:
         cpu: 200m
         memory: 256Mi
     remoteWrite:
-      - url: "http://vmsingle-victoria-metrics-k8s-stack.monitoring.svc:8429/api/v1/write"
+      - url: "http://vmsingle-vm.monitoring.svc:8429/api/v1/write"
 
 # Component configurations
 kubeStateMetrics:
