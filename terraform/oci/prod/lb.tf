@@ -20,7 +20,7 @@ resource "oci_load_balancer_backend_set" "prod_lb_bs" {
 
   health_checker {
     protocol          = "TCP"
-    port              = 80
+    port              = 30080
     interval_ms       = 10000
     timeout_in_millis = 3000
     retries           = 3
@@ -39,7 +39,7 @@ resource "oci_load_balancer_backend" "prod_lb_backend" {
   load_balancer_id = oci_load_balancer.prod_lb.id
   backendset_name  = oci_load_balancer_backend_set.prod_lb_bs.name
   ip_address       = oci_core_instance.prod_instance.private_ip
-  port             = 80
+  port             = 30080
   backup           = false
   drain            = false
   offline          = false
@@ -55,7 +55,7 @@ resource "oci_load_balancer_backend_set" "prod_lb_bs_https" {
 
   health_checker {
     protocol          = "TCP"
-    port              = 443 # Health check on 443 (Server must be listening!)
+    port              = 30443 # Health check on 30443 (Server must be listening!)
     interval_ms       = 10000
     timeout_in_millis = 3000
     retries           = 3
@@ -74,7 +74,7 @@ resource "oci_load_balancer_backend" "prod_lb_backend_https" {
   load_balancer_id = oci_load_balancer.prod_lb.id
   backendset_name  = oci_load_balancer_backend_set.prod_lb_bs_https.name
   ip_address       = oci_core_instance.prod_instance.private_ip
-  port             = 443
+  port             = 30443
   backup           = false
   drain            = false
   offline          = false
