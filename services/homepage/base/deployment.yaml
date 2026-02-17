@@ -1,0 +1,59 @@
+---
+# Backend API
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage-api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+      component: backend
+  template:
+    metadata:
+      labels:
+        app: homepage
+        component: backend
+    spec:
+      containers:
+      - name: api
+        image: ghcr.io/pseudo-lab/devfactory-homepage-backend # Tag will be managed by Kustomize/CI
+        imagePullPolicy: Always
+        env:
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: devfactory-db-secrets
+              key: database-url
+        - name: IP_SALT
+          valueFrom:
+            secretKeyRef:
+              name: devfactory-db-secrets
+              key: ip-salt
+        ports:
+        - containerPort: 3000
+---
+# Frontend
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homepage-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homepage
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: homepage
+        component: frontend
+    spec:
+      containers:
+      - name: frontend
+        image: ghcr.io/pseudo-lab/devfactory-homepage-frontend # Tag will be managed by Kustomize/CI
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
