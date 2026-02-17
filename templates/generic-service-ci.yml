@@ -1,0 +1,101 @@
+name: App Build & Deploy (Generic)
+
+on:
+  push:
+    branches: [ "main" ]
+    paths-ignore:
+      - 'README.md'
+      - '.gitignore'
+
+env:
+  REGISTRY: ghcr.io
+  # IMAGE_NAME: ghcr.io/pseudo-lab/<repo-name> (will be inferred)
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      matrix:
+        include:
+          # 각 서비스 저장소의 상황에 따라 수정하여 사용
+          - component: backend
+            context: ./backend
+            image_suffix: backend
+          - component: frontend
+            context: ./frontend
+            image_suffix: frontend
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          # 예: ghcr.io/pseudo-lab/event-bingo-backend
+          images: ${{ env.REGISTRY }}/${{ github.repository }}-${{ matrix.image_suffix }}
+          tags: |
+            type=sha,prefix=sha-,format=short
+            type=raw,value=latest,enable=${{ github.ref == 'refs/heads/main' }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v5
+        with:
+          context: ${{ matrix.context }}
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy-handoff:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Ops Repository
+        uses: actions/checkout@v4
+        with:
+          repository: Pseudo-Lab/DevFactory-Ops
+          token: ${{ secrets.OPS_REPO_TOKEN }}
+          path: ops-repo
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Update Image Tags in Ops Repo
+        run: |
+          SHORT_SHA=$(echo "${{ github.sha }}" | cut -c1-7)
+          REPO_NAME=$(echo "${{ github.repository }}" | cut -d'/' -f2 | tr '[:upper:]' '[:lower:]')
+          
+          # 환경별/서비스별 경로 규칙에 따라 수정 필요
+          # 예: services/bingo/overlays/prod
+          TARGET_DIR="ops-repo/services/${REPO_NAME}/overlays/prod"
+          
+          if [ -d "$TARGET_DIR" ]; then
+            cd "$TARGET_DIR"
+            # 해당 디렉토리의 kustomization.yaml에 정의된 이미지 이름과 매칭 필요
+            # 아래는 예시 패턴입니다.
+            kustomize edit set image backend-image-name=${{ env.REGISTRY }}/${{ github.repository }}-backend:sha-$SHORT_SHA
+            kustomize edit set image frontend-image-name=${{ env.REGISTRY }}/${{ github.repository }}-frontend:sha-$SHORT_SHA
+          else
+            echo "Error: Target directory $TARGET_DIR not found in Ops repo."
+            exit 1
+          fi
+          
+      - name: Commit and Push to Ops Repo
+        run: |
+          cd ops-repo
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "chore(deploy): update ${{ github.repository }} images to sha-${{ github.sha }}" || echo "No changes to commit"
+          git push

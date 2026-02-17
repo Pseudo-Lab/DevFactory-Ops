@@ -1,0 +1,35 @@
+name: Validate Manifests
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Kustomize
+        uses: imranismail/setup-kustomize@v2
+
+      - name: Validate Infrastructure Manifests
+        run: |
+          for dir in infrastructure/overlays/*; do
+            if [ -d "$dir" ]; then
+              echo "Validating $dir..."
+              kustomize build "$dir" > /dev/null
+            fi
+          done
+
+      - name: Validate Service Manifests
+        run: |
+          for dir in services/*/overlays/*; do
+            if [ -d "$dir" ]; then
+              echo "Validating $dir..."
+              kustomize build "$dir" > /dev/null
+            fi
+          done
