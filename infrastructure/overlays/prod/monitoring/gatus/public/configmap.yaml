@@ -28,20 +28,21 @@ data:
             color: #64748b;
             margin-top: -0.25rem;
         }
-        /* Replace "Gatus" with "DevFactory" in footer */
-        footer div.text-sm a[href*="gatus.io"] {
+        /* Replace "Powered by Gatus" with static "Powered by DevFactory" */
+        footer div.text-sm.text-center {
             font-size: 0 !important;
         }
-        footer div.text-sm a[href*="gatus.io"]::before {
-            content: "DevFactory" !important;
-            font-size: 0.875rem !important;
-            color: #065f46 !important;
+        footer div.text-sm.text-center a {
+            display: none !important;
         }
-        .dark footer div.text-sm a[href*="gatus.io"]::before {
-            color: #10b981 !important;
+        footer div.text-sm.text-center::before {
+            content: "Powered by DevFactory" !important;
+            font-size: 0.84rem !important;
+            color: #64748b !important;
         }
-        footer div.text-sm a[href*="gatus.io"]:hover::before {
-            color: #059669 !important;
+        /* Hide GitHub icon in footer */
+        #social {
+            display: none !important;
         }
         .dark header img {
             content: url("https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/infrastructure/assets/pl_symbol_white.png");
