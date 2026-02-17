@@ -56,14 +56,13 @@
     ```
 
 2.  **부트스트랩 스크립트 실행**:
-    - 필요한 경우 `export`를 통해 설정을 변경한 뒤 스크립트를 실행합니다.
+    - 서버에서 아래 명령어를 실행하여 k3s, Helm, ArgoCD를 기본 설치합니다.
     ```bash
-    # (선택) 외부(로컬 PC)에서 kubectl 명령어를 사용하고 싶은 경우에만 지정합니다.
-    # 서버 내부에서만 작업한다면 생략해도 무방합니다.
-    export LB_IP="실제_LB_IP_또는_공인_IP"
+    # (선택) 외부 접속용 IP 설정 (필요한 경우에만)
+    export LB_IP="실제_공인_IP"
 
-    # 부트스트랩 스크립트 실행
-    bash scripts/bootstrap-cluster.sh
+    # 스크립트 실행
+    ./scripts/bootstrap/bootstrap-cluster.sh
     ```
     *이 스크립트는 다음 과정을 자동으로 수행합니다:*
     - **OS 방화벽 개방**: 6443, 80, 443 등 필수 포트 허용

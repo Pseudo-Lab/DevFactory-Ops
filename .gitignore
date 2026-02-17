@@ -11,6 +11,10 @@
 crash.log
 terraform/prod.pem
 
+# Terraform Plan
+tfplan
+detailed_plan.txt
+
 # Planning documents (Local only)
 .agent/
 now.md
@@ -20,5 +24,6 @@ state.json
 # Documentation Strategy
 # Keep the repository minimal for now. README will be organized later.
 docs/
-tfplan
-detailed_plan.txt
+
+# Local secret scripts
+scripts/ops/secrets.env

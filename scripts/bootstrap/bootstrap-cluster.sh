@@ -1,5 +1,5 @@
 #!/bin/bash
-# scripts/bootstrap-cluster.sh
+# scripts/bootstrap/bootstrap-cluster.sh
 # Unified bootstrap script for DevFactory OCI Cluster
 
 set -e
@@ -7,7 +7,7 @@ set -e
 # --- Directory Awareness ---
 # Ensure the script runs relative to the repository root even if called from elsewhere
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+REPO_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 cd "$REPO_ROOT"
 
 echo "📂 Working directory set to: $REPO_ROOT"
