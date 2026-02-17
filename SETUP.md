@@ -82,7 +82,7 @@
     - 서버의 `~/.kube/config` 파일을 로컬 PC의 `~/.kube/config`로 가져옵니다.
     - 파일 내 `server` 주소를 `https://<LB_IP_또는_Instance_IP>:6443`으로 수정합니다.
 2.  **GitOps 동기화 확인**:
-    - 스크립트가 자동으로 `kubernetes/clusters/prod/root-app.yaml`을 적용했습니다.
+    - 스크립트가 자동으로 `clusters/prod.yaml`을 적용했습니다.
     - 이제 ArgoCD가 리포지토리를 감시하며 `ingress-nginx`, `sealed-secrets` 등을 자동으로 배포합니다.
 3.  **동기화 확인**:
     - ArgoCD UI에 접속하여 `ingress-nginx`, `sealed-secrets` 등이 자동으로 배포되는지 확인합니다.

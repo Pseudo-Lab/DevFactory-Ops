@@ -104,7 +104,7 @@ kubectl wait --for=condition=established --timeout=120s crd/applications.argopro
 
 # 9. Apply Root App (GitOps Start)
 echo "🌱 Applying Root Application (GitOps)..."
-kubectl apply -f kubernetes/clusters/prod/root-app.yaml
+kubectl apply -f clusters/prod.yaml
 
 echo "✅ Bootstrap Complete! Check ArgoCD for synchronization status."
 echo "🎉 Setup Finished! Please run 'source ~/.bashrc' to apply aliases."
