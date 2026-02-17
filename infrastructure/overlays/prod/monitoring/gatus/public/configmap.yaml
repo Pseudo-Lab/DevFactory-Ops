@@ -19,8 +19,15 @@ data:
         size32x32: "https://raw.githubusercontent.com/Pseudo-Lab/DevFactory-Ops/main/infrastructure/assets/pl_symbol.png"
       dashboard-heading: "Service Health Dashboard"
       dashboard-subheading: "Real-time health monitoring for Pseudo-Lab's DevFactory services"
-      buttons: []
       custom-css: |
+        /* Show description in header */
+        header .flex.items-center.gap-4 div div:nth-child(2)::after {
+            content: "System Monitoring Dashboard";
+            display: block;
+            font-size: 0.875rem;
+            color: #64748b;
+            margin-top: -0.25rem;
+        }
         /* Replace "Gatus" with "DevFactory" in footer */
         footer div.text-sm a[href*="gatus.io"] {
             font-size: 0 !important;
