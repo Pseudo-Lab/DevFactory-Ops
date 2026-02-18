@@ -16,6 +16,8 @@ spec:
         app: homepage
         component: backend
     spec:
+      imagePullSecrets:
+      - name: ghcr-creds
       containers:
       - name: api
         image: ghcr.io/pseudo-lab/devfactory-homepage-backend # Tag will be managed by Kustomize/CI
@@ -51,6 +53,8 @@ spec:
         app: homepage
         component: frontend
     spec:
+      imagePullSecrets:
+      - name: ghcr-creds
       containers:
       - name: frontend
         image: ghcr.io/pseudo-lab/devfactory-homepage-frontend # Tag will be managed by Kustomize/CI
