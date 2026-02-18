@@ -3,17 +3,19 @@ kind: Kustomization
 namespace: apps-homepage
 
 resources:
-  - ../../base
-  - namespace.yaml
-  - ingress.yaml
-  - sealed-secret.yaml
+- ../../base
+- namespace.yaml
+- ingress.yaml
+- sealed-secret.yaml
 
 commonLabels:
   environment: production
   project: devfactory-homepage
 
 images:
-  - name: ghcr.io/pseudo-lab/devfactory-homepage-backend
-    newTag: sha-placeholder # Dynamically updated by CI (GitHub SHA)
-  - name: ghcr.io/pseudo-lab/devfactory-homepage-frontend
-    newTag: sha-placeholder # Dynamically updated by CI (GitHub SHA)
+- name: ghcr.io/pseudo-lab/devfactory-homepage-backend
+  newName: ghcr.io/pseudo-lab/devfactory-homepage-backend
+  newTag: sha-40d63cc
+- name: ghcr.io/pseudo-lab/devfactory-homepage-frontend
+  newName: ghcr.io/pseudo-lab/devfactory-homepage-frontend
+  newTag: sha-40d63cc
