@@ -16,7 +16,7 @@ commonLabels:
 images:
 - name: ghcr.io/pseudo-lab/devfactory-homepage-backend
   newName: ghcr.io/pseudo-lab/devfactory-homepage-backend
-  newTag: sha-cf4c63d
+  newTag: sha-f306674
 - name: ghcr.io/pseudo-lab/devfactory-homepage-frontend
   newName: ghcr.io/pseudo-lab/devfactory-homepage-frontend
-  newTag: sha-cf4c63d
+  newTag: sha-f306674
