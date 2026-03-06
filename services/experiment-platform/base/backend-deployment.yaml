@@ -14,6 +14,8 @@ spec:
         app: experiment-platform
         component: backend
     spec:
+      imagePullSecrets:
+        - name: ghcr-creds
       containers:
         - name: backend
           image: ghcr.io/pseudo-lab/experiment-platform-backend
