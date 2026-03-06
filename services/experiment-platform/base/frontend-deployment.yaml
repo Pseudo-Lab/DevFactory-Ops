@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: experiment-platform-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: experiment-platform
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: experiment-platform
+        component: frontend
+    spec:
+      containers:
+        - name: frontend
+          image: ghcr.io/pseudo-lab/experiment-platform-frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
