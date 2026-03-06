@@ -13,7 +13,7 @@ spec:
     path: services/experiment-platform/overlays/prod
   destination:
     server: https://kubernetes.default.svc
-    namespace: apps-experiment-platform
+    namespace: experiment-platform
   syncPolicy:
     automated:
       prune: true
