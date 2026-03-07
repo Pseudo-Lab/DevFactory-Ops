@@ -15,7 +15,7 @@ spec:
         component: frontend
     spec:
       imagePullSecrets:
-        - name: ghcr-creds
+        - name: ghcr-creds-experiment-platform
       containers:
         - name: frontend
           image: ghcr.io/pseudo-lab/experiment-platform-frontend
