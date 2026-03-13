@@ -18,7 +18,7 @@ spec:
         - name: ghcr-creds-experiment-platform
       containers:
         - name: backend
-          image: ghcr.io/pseudo-lab/experiment-platform-backend
+          image: ghcr.io/pseudo-lab/experiment-platform-pseudolab-backend
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
