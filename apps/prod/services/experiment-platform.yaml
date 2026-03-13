@@ -10,7 +10,7 @@ spec:
   source:
     repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
     targetRevision: main
-    path: services/experiment-platform/overlays/prod
+    path: services/experiment-platform-pseudolab/overlays/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: experiment-platform
