@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bingo-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: event-bingo
+      component: frontend
+  template:
+    metadata:
+      labels:
+        app: event-bingo
+        component: frontend
+    spec:
+      imagePullSecrets:
+        - name: ghcr-creds
+      containers:
+        - name: frontend
+          image: ghcr.io/pseudo-lab/event-bingo-frontend
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80
