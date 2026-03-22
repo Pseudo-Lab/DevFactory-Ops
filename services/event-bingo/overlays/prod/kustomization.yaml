@@ -3,20 +3,20 @@ kind: Kustomization
 namespace: event-bingo
 
 resources:
-  - ../../base
-  - namespace.yaml
-  - ingress.yaml
-  - ghcr-pull-secret.yaml
-  - sealed-secret.yaml
+- ../../base
+- namespace.yaml
+- ingress.yaml
+- ghcr-pull-secret.yaml
+- sealed-secret.yaml
 
 commonLabels:
   environment: production
   project: event-bingo
 
 images:
-  - name: ghcr.io/pseudo-lab/event-bingo-frontend
-    newName: ghcr.io/pseudo-lab/event-bingo-frontend
-    newTag: sha-8f8b2ca
-  - name: ghcr.io/pseudo-lab/event-bingo-backend
-    newName: ghcr.io/pseudo-lab/event-bingo-backend
-    newTag: sha-8f8b2ca
+- name: ghcr.io/pseudo-lab/event-bingo-backend
+  newName: ghcr.io/pseudo-lab/event-bingo-backend
+  newTag: sha-f17837f
+- name: ghcr.io/pseudo-lab/event-bingo-frontend
+  newName: ghcr.io/pseudo-lab/event-bingo-frontend
+  newTag: sha-f17837f
