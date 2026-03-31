@@ -4,6 +4,18 @@ global:
 configs:
   cm:
     url: https://argocd.pseudolab-devfactory.com
+    users.anonymous.enabled: "false"
+    # Shared account for bingo service admins (set password in argocd-secret)
+    accounts.bingo-admin: login
+  rbac:
+    # No implicit access for authenticated users; grant least privilege explicitly.
+    policy.default: role:none
+    policy.csv: |
+      # bingo-admin: only event-bingo app visibility + sync/rollback.
+      p, role:event-bingo-deployer, applications, get, default/event-bingo, allow
+      p, role:event-bingo-deployer, applications, sync, default/event-bingo, allow
+      g, bingo-admin, role:event-bingo-deployer
+    scopes: '[groups, email]'
 
 server:
   ingress:
