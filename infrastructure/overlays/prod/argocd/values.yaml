@@ -14,6 +14,7 @@ configs:
       # bingo-admin: only event-bingo app visibility + sync/rollback.
       p, role:event-bingo-deployer, applications, get, default/event-bingo, allow
       p, role:event-bingo-deployer, applications, sync, default/event-bingo, allow
+      p, role:event-bingo-deployer, logs, get, default/event-bingo, allow
       g, bingo-admin, role:event-bingo-deployer
     scopes: '[groups, email]'
 
