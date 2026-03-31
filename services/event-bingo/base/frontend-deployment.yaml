@@ -20,5 +20,8 @@ spec:
         - name: frontend
           image: ghcr.io/pseudo-lab/event-bingo-frontend
           imagePullPolicy: Always
+          envFrom:
+            - secretRef:
+                name: event-bingo-frontend-runtime-secrets
           ports:
             - containerPort: 80
