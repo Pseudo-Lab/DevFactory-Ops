@@ -20,8 +20,26 @@ spec:
         - name: frontend
           image: ghcr.io/pseudo-lab/event-bingo-frontend
           imagePullPolicy: Always
-          envFrom:
-            - secretRef:
-                name: event-bingo-frontend-runtime-secrets
           ports:
             - containerPort: 80
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "32Mi"
+            limits:
+              cpu: "100m"
+              memory: "128Mi"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            failureThreshold: 3
