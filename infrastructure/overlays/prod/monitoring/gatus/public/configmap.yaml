@@ -75,3 +75,9 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
+      - name: "Event Bingo API"
+        group: "Services"
+        url: "https://bingo.pseudolab-devfactory.com/health"
+        interval: 5m
+        conditions:
+          - "[STATUS] == 200"
