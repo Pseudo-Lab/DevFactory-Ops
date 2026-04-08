@@ -21,9 +21,9 @@ now.md
 plan.md
 state.json
 
-# Documentation Strategy
-# Keep the repository minimal for now. README will be organized later.
-docs/
+# Infra admin only docs
+docs/*
+!docs/setup.md
 
 # Local secret scripts
 scripts/ops/secrets.env
