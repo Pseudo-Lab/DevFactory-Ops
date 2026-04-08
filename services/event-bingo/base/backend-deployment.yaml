@@ -16,6 +16,14 @@ spec:
     spec:
       imagePullSecrets:
         - name: ghcr-creds
+      initContainers:
+        - name: migrate
+          image: ghcr.io/pseudo-lab/event-bingo-backend
+          imagePullPolicy: Always
+          command: ["alembic", "upgrade", "head"]
+          envFrom:
+            - secretRef:
+                name: event-bingo-backend-runtime-secrets
       containers:
         - name: backend
           image: ghcr.io/pseudo-lab/event-bingo-backend
@@ -25,3 +33,24 @@ spec:
                 name: event-bingo-backend-runtime-secrets
           ports:
             - containerPort: 8000
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "1Gi"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            failureThreshold: 3
