@@ -6,6 +6,7 @@ resources:
   - namespace.yaml
   - ingress.yaml
   - ghcr-pull-secret.yaml
+  - backend-sealed-secret.yaml
 commonLabels:
   environment: production
   project: experiment-platform
