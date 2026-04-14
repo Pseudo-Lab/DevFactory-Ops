@@ -25,6 +25,8 @@ vmalert:
 # For now, let's keep it in the stack for easier integration.
 grafana:
   enabled: true
+  datasourceConfigMaps:
+    - grafana-loki-datasource
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -54,7 +56,7 @@ vmsingle:
       requests:
         cpu: 100m
         memory: 512Mi
-    retentionPeriod: "14d"
+    retentionPeriod: "180d"
 
 # Scrape configurations
 vmagent:
