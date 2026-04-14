@@ -3,22 +3,38 @@ deploymentMode: SingleBinary
 
 singleBinary:
   replicas: 1
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  persistence:
+    enabled: true
+    size: 50Gi
+    storageClass: local-path
 
 loki:
   auth_enabled: false
 
-  ingester:
-    chunk_idle_period: 3m
-    max_chunk_age: 1h
-    chunk_retain_period: 1m
-    max_streams_per_user: 10000
+  commonConfig:
+    replication_factor: 1
+
+  # Loki chart v6.x: storage type and bucketNames required even for filesystem
+  storage:
+    type: filesystem
+    bucketNames:
+      chunks: chunks
+      ruler: ruler
+      admin: admin
 
   limits_config:
-    enforce_metric_name: false
     reject_old_samples: true
     reject_old_samples_max_age: 168h
     retention_period: 4320h  # 180 days
     max_cache_freshness_per_query: 10m
+    max_streams_per_user: 10000
 
   schema_config:
     configs:
@@ -29,14 +45,6 @@ loki:
         index:
           prefix: index_
           period: 24h
-
-  storage_config:
-    filesystem:
-      directory: /loki/storage
-
-  table_manager:
-    retention_deletes_enabled: false
-    retention_period: 0
 
 # Promtail - log collection agent
 promtail:
@@ -69,21 +77,3 @@ promtail:
     requests:
       cpu: 50m
       memory: 64Mi
-
-# Grafana data source for Loki
-# (Will be added manually via ConfigMap in prod overlay)
-
-# Resource constraints for ARM64 single-node
-resources:
-  limits:
-    cpu: 250m
-    memory: 512Mi
-  requests:
-    cpu: 100m
-    memory: 256Mi
-
-# PVC for log storage
-persistence:
-  enabled: true
-  size: 50Gi
-  storageClassName: local-path
