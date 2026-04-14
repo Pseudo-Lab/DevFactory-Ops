@@ -5,6 +5,7 @@ configs:
   cm:
     url: https://argocd.pseudolab-devfactory.com
     users.anonymous.enabled: "false"
+    kustomize.buildOptions: --enable-helm
     # Shared account for bingo service admins (set password in argocd-secret)
     accounts.bingo-admin: login
   rbac:
