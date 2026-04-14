@@ -15,6 +15,27 @@ singleBinary:
     size: 50Gi
     storageClass: local-path
 
+# Loki chart v6.x: explicitly zero SimpleScalable targets so the
+# chart's validate.yaml accepts SingleBinary-only deployment.
+read:
+  replicas: 0
+write:
+  replicas: 0
+backend:
+  replicas: 0
+
+# Disable auxiliary components not needed on single-node ARM64
+chunksCache:
+  enabled: false
+resultsCache:
+  enabled: false
+gateway:
+  enabled: false
+lokiCanary:
+  enabled: false
+test:
+  enabled: false
+
 loki:
   auth_enabled: false
 
