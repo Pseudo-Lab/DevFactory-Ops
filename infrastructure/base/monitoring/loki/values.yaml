@@ -57,14 +57,15 @@ loki:
     max_cache_freshness_per_query: 10m
     max_streams_per_user: 10000
 
-  schema_config:
+  # Chart v6.x expects camelCase schemaConfig (validate.yaml checks this key)
+  schemaConfig:
     configs:
-      - from: 2020-10-24
+      - from: "2024-04-01"
         store: tsdb
         object_store: filesystem
         schema: v13
         index:
-          prefix: index_
+          prefix: loki_index_
           period: 24h
 
 # Promtail - log collection agent
