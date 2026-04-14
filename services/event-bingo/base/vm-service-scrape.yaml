@@ -1,0 +1,13 @@
+apiVersion: operator.victoriametrics.com/v1beta1
+kind: VMServiceScrape
+metadata:
+  name: event-bingo-backend
+spec:
+  selector:
+    matchLabels:
+      app: event-bingo
+      component: backend
+  endpoints:
+    - port: http
+      path: /metrics
+      interval: 30s
