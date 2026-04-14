@@ -4,6 +4,8 @@ metadata:
   name: event-bingo-backend
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: event-bingo
