@@ -43,6 +43,25 @@ grafana:
     existingSecret: grafana-admin-creds
     userKey: admin-user
     passwordKey: admin-password
+  extraSecretMounts:
+    - name: bingo-creds
+      mountPath: /etc/grafana/secrets/bingo
+      secretName: grafana-bingo-creds
+      readOnly: true
+  lifecycle:
+    postStart:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - |
+            until curl -s http://localhost:3000/api/health; do sleep 5; done;
+            BINGO_USER=$(cat /etc/grafana/secrets/bingo/user)
+            BINGO_PASS=$(cat /etc/grafana/secrets/bingo/password)
+            ADMIN_PASS=$(cat /etc/grafana/admin-password)
+            curl -X POST -H "Content-Type: application/json" \
+              -d "{\"name\":\"Bingo Developer\", \"email\":\"bingo-dev@pseudolab.local\", \"login\":\"$BINGO_USER\", \"password\":\"$BINGO_PASS\"}" \
+              http://admin:$ADMIN_PASS@localhost:3000/api/admin/users
 
 # VictoriaMetrics Single node (cheaper than cluster version)
 vmsingle:
