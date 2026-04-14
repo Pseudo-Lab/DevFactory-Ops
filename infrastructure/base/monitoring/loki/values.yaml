@@ -1,0 +1,85 @@
+# Loki k8s stack for single-node A1 (ARM64)
+loki:
+  enabled: true
+  auth_enabled: false
+
+  ingester:
+    chunk_idle_period: 3m
+    max_chunk_age: 1h
+    chunk_retain_period: 1m
+    max_streams_per_user: 10000
+
+  limits_config:
+    enforce_metric_name: false
+    reject_old_samples: true
+    reject_old_samples_max_age: 168h
+    retention_period: 4320h  # 180 days
+    max_cache_freshness_per_query: 10m
+
+  schema_config:
+    configs:
+      - from: 2020-10-24
+        store: tsdb
+        object_store: filesystem
+        schema: v13
+        index:
+          prefix: index_
+          period: 24h
+
+  storage_config:
+    filesystem:
+      directory: /loki/storage
+
+  table_manager:
+    retention_deletes_enabled: false
+    retention_period: 0
+
+# Promtail - log collection agent
+promtail:
+  enabled: true
+  config:
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+    scrape_configs:
+      - job_name: kubernetes-pods
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: pod
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: namespace
+          - source_labels: [__meta_kubernetes_pod_label_app]
+            action: replace
+            target_label: app
+          - source_labels: [__meta_kubernetes_pod_container_name]
+            action: replace
+            target_label: container
+
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+# Grafana data source for Loki
+# (Will be added manually via ConfigMap in prod overlay)
+
+# Resource constraints for ARM64 single-node
+resources:
+  limits:
+    cpu: 250m
+    memory: 512Mi
+  requests:
+    cpu: 100m
+    memory: 256Mi
+
+# PVC for log storage
+persistence:
+  enabled: true
+  size: 50Gi
+  storageClassName: local-path

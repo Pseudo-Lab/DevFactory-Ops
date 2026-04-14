@@ -5,6 +5,7 @@ resources:
   - ../../base
   - monitoring/gatus/public
   - monitoring/gatus/gatus-alerting-sealed-secret.yaml
+  - monitoring/loki
 
 patchesStrategicMerge:
   - cert-manager-email-patch.yaml
