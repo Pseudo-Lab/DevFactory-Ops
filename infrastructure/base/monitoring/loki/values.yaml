@@ -1,6 +1,10 @@
 # Loki k8s stack for single-node A1 (ARM64)
+deploymentMode: SingleBinary
+
+singleBinary:
+  replicas: 1
+
 loki:
-  enabled: true
   auth_enabled: false
 
   ingester:
