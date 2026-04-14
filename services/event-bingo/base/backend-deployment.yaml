@@ -25,7 +25,7 @@ spec:
             - secretRef:
                 name: event-bingo-backend-runtime-secrets
       containers:
-        - name: backend
+        - name: event-bingo-backend
           image: ghcr.io/pseudo-lab/event-bingo-backend
           imagePullPolicy: Always
           envFrom:

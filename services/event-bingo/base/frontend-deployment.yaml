@@ -17,7 +17,7 @@ spec:
       imagePullSecrets:
         - name: ghcr-creds
       containers:
-        - name: frontend
+        - name: event-bingo-frontend
           image: ghcr.io/pseudo-lab/event-bingo-frontend
           imagePullPolicy: Always
           ports:
