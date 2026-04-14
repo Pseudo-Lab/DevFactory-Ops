@@ -22,3 +22,6 @@ spec:
           imagePullPolicy: Always
           ports:
             - containerPort: 8000
+          envFrom:
+            - secretRef:
+                name: experiment-platform-backend-secret
