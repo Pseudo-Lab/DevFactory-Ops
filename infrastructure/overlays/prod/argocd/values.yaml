@@ -8,6 +8,8 @@ configs:
     kustomize.buildOptions: --enable-helm
     # Shared account for bingo service admins (set password in argocd-secret)
     accounts.bingo-admin: login
+    # Development account for experiment-platform (set password in argocd-secret)
+    accounts.exp-dev: login
   rbac:
     # No implicit access for authenticated users; grant least privilege explicitly.
     policy.default: role:none
@@ -17,6 +19,12 @@ configs:
       p, role:event-bingo-deployer, applications, sync, default/event-bingo, allow
       p, role:event-bingo-deployer, logs, get, default/event-bingo, allow
       g, bingo-admin, role:event-bingo-deployer
+
+      # exp-dev: only experiment-platform app visibility + sync/rollback.
+      p, role:experiment-platform-developer, applications, get, default/experiment-platform, allow
+      p, role:experiment-platform-developer, applications, sync, default/experiment-platform, allow
+      p, role:experiment-platform-developer, logs, get, default/experiment-platform, allow
+      g, exp-dev, role:experiment-platform-developer
     scopes: '[groups, email]'
 
 server:
