@@ -5,6 +5,7 @@ kind: Deployment
 metadata:
   name: homepage-api
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:
@@ -42,6 +43,7 @@ kind: Deployment
 metadata:
   name: homepage-frontend
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:
