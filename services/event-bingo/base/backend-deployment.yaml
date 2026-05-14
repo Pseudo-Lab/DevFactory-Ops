@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: event-bingo-backend
 spec:
-  revisionHistoryLimit: 5
+  revisionHistoryLimit: 3
   replicas: 1
   strategy:
     type: RollingUpdate
