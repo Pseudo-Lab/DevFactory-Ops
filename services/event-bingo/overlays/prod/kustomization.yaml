@@ -16,7 +16,7 @@ commonLabels:
 images:
 - name: ghcr.io/pseudo-lab/event-bingo-backend
   newName: ghcr.io/pseudo-lab/event-bingo-backend
-  newTag: sha-69769b3
+  newTag: sha-75e0f23
 - name: ghcr.io/pseudo-lab/event-bingo-frontend
   newName: ghcr.io/pseudo-lab/event-bingo-frontend
-  newTag: sha-69769b3
+  newTag: sha-75e0f23
