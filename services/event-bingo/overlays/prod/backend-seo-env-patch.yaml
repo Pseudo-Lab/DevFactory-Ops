@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bingo-backend
+spec:
+  template:
+    spec:
+      containers:
+        - name: event-bingo-backend
+          env:
+            - name: FRONTEND_INDEX_URL
+              value: "http://event-bingo-frontend.event-bingo.svc.cluster.local/"
+            - name: PUBLIC_SITE_ORIGIN
+              value: "https://bingo.pseudolab-devfactory.com"
