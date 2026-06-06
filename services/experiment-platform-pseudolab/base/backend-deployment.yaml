@@ -2,6 +2,8 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: experiment-platform-backend
+  annotations:
+    secret.reloader.stakater.com/reload: experiment-platform-backend-secret
 spec:
   revisionHistoryLimit: 5
   replicas: 1
