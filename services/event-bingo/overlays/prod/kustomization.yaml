@@ -9,6 +9,9 @@ resources:
 - ghcr-pull-secret.yaml
 - sealed-secret.yaml
 
+patches:
+- path: backend-seo-env-patch.yaml
+
 commonLabels:
   environment: production
   project: event-bingo

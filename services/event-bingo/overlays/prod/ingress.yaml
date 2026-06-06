@@ -5,6 +5,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "letsencrypt-prod"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   tls:
@@ -15,8 +16,15 @@ spec:
     - host: bingo.pseudolab-devfactory.com
       http:
         paths:
-          - path: /api
-            pathType: Prefix
+          - path: /api(/|$).*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: event-bingo-backend
+                port:
+                  number: 8000
+          - path: /event/[^/]+/?$
+            pathType: ImplementationSpecific
             backend:
               service:
                 name: event-bingo-backend
