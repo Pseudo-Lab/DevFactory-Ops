@@ -13,7 +13,7 @@ commonLabels:
 images:
   - name: ghcr.io/pseudo-lab/experiment-platform-pseudolab-frontend
     newName: ghcr.io/pseudo-lab/experiment-platform-pseudolab-frontend
-    newTag: b5824890429226c93b901a720003afe12215d695
+    newTag: 8e9ae7eb7124dcb115f3b79819b30fe725fecde3
   - name: ghcr.io/pseudo-lab/experiment-platform-pseudolab-backend
     newName: ghcr.io/pseudo-lab/experiment-platform-pseudolab-backend
-    newTag: b5824890429226c93b901a720003afe12215d695
+    newTag: 8e9ae7eb7124dcb115f3b79819b30fe725fecde3
