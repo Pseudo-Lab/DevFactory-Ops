@@ -8,5 +8,3 @@ data:
   APP_ENV: production
   PUBLIC_APP_URL: https://hackathon.pseudolab-devfactory.com
   LOG_LEVEL: INFO
-  SESSION_COOKIE_NAME: __Host-hackathon_session
-  SESSION_ABSOLUTE_HOURS: "12"
