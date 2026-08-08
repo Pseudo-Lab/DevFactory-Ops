@@ -1,0 +1,33 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hackathon-platform
+
+resources:
+  - ../../base
+  - namespace.yaml
+  - api-configmap.yaml
+  - ingress.yaml
+  - sealed-secret.yaml
+  - ghcr-pull-secret.yaml
+
+patches:
+  - target:
+      group: bitnami.com
+      version: v1alpha1
+      kind: SealedSecret
+    path: sealed-secrets-sync-wave-patch.yaml
+
+labels:
+  - pairs:
+      environment: production
+      project: hackathon-platform
+    includeSelectors: false
+
+images:
+  - name: ghcr.io/soohyunme/hackathon-platform-api
+    newName: ghcr.io/soohyunme/hackathon-platform-api
+    newTag: 22581228c92d64205584fe301b7a4ee439ad15e7
+  - name: ghcr.io/soohyunme/hackathon-platform-web
+    newName: ghcr.io/soohyunme/hackathon-platform-web
+    newTag: 22581228c92d64205584fe301b7a4ee439ad15e7

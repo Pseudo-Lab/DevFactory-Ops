@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hackathon-platform-migrate
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/sync-wave: "-1"
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation,HookSucceeded
+spec:
+  backoffLimit: 0
+  activeDeadlineSeconds: 300
+  template:
+    metadata:
+      labels:
+        app: hackathon-platform
+        component: migration
+    spec:
+      restartPolicy: Never
+      imagePullSecrets:
+        - name: ghcr-creds-hackathon-platform
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: migrate
+          image: ghcr.io/soohyunme/hackathon-platform-api
+          imagePullPolicy: IfNotPresent
+          workingDir: /app
+          command:
+            - alembic
+            - -c
+            - /app/alembic.ini
+            - upgrade
+            - head
+          envFrom:
+            - configMapRef:
+                name: hackathon-platform-api-config
+            - secretRef:
+                name: hackathon-platform-api-secret
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
