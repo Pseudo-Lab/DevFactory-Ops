@@ -27,7 +27,7 @@ labels:
 images:
   - name: ghcr.io/soohyunme/hackathon-platform-api
     newName: ghcr.io/soohyunme/hackathon-platform-api
-    newTag: 0f9abfb57ca446562ad2079fccdb6ad1ef8f184c
+    newTag: a463e31bbb6f4c1e75476427542a94e0d2dbe2f1
   - name: ghcr.io/soohyunme/hackathon-platform-web
     newName: ghcr.io/soohyunme/hackathon-platform-web
-    newTag: 0f9abfb57ca446562ad2079fccdb6ad1ef8f184c
+    newTag: a463e31bbb6f4c1e75476427542a94e0d2dbe2f1
