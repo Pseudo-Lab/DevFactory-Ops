@@ -6,7 +6,7 @@ metadata:
     secret.reloader.stakater.com/reload: event-bingo-backend-runtime-secrets
 spec:
   revisionHistoryLimit: 3
-  replicas: 1
+  replicas: 2
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -36,6 +36,17 @@ spec:
         - name: event-bingo-backend
           image: ghcr.io/pseudo-lab/event-bingo-backend
           imagePullPolicy: Always
+          command: ["uvicorn"]
+          args:
+            - main:app
+            - --app-dir
+            - app
+            - --host
+            - 0.0.0.0
+            - --port
+            - "8000"
+            - --workers
+            - "2"
           envFrom:
             - secretRef:
                 name: event-bingo-backend-runtime-secrets
