@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: event-bingo-frontend
+spec:
+  template:
+    spec:
+      containers:
+        - name: event-bingo-frontend
+          volumeMounts:
+            - name: runtime-config
+              mountPath: /usr/share/nginx/html/runtime
+              readOnly: true
+      volumes:
+        - name: runtime-config
+          configMap:
+            name: event-bingo-frontend-runtime
