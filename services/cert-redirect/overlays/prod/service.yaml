@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: cert-redirect
 spec:
-  # Ingress requires a service reference, but NGINX returns the redirect
-  # before proxying. No application pods or external upstream are needed.
+  selector:
+    app: cert-redirect
   ports:
     - name: http
       port: 80
-      targetPort: 80
+      targetPort: http
