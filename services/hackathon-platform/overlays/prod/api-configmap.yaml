@@ -8,3 +8,6 @@ data:
   APP_ENV: production
   PUBLIC_APP_URL: https://hackathon.pseudolab-devfactory.com
   LOG_LEVEL: INFO
+  UPLOAD_ROOT: /data/hackathon-uploads
+  UPLOAD_BUDGET_BYTES: "45000000000"
+  UPLOAD_MIN_FREE_BYTES: "10000000000"

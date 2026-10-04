@@ -10,6 +10,7 @@ resources:
   - ingress.yaml
   - sealed-secret.yaml
   - ghcr-pull-secret.yaml
+  - upload-storage.yaml
 
 patches:
   - target:
@@ -17,6 +18,14 @@ patches:
       version: v1alpha1
       kind: SealedSecret
     path: sealed-secrets-sync-wave-patch.yaml
+  - target:
+      kind: Deployment
+      name: hackathon-platform-api
+    path: upload-mount-patch.yaml
+  - target:
+      kind: Job
+      name: hackathon-platform-migrate
+    path: migration-upload-mount-patch.yaml
 
 labels:
   - pairs:
