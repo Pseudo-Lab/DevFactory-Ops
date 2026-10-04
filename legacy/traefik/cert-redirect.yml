@@ -1,0 +1,36 @@
+http:
+  routers:
+    cert-retired-http:
+      rule: "Host(`cert.pseudo-lab.com`, `dev-cert.pseudolab-devfactory.com`)"
+      entryPoints:
+        - web
+      # Override the old application's longer API routing rules as well.
+      priority: 1000
+      middlewares:
+        - cert-retired-no-store
+        - cert-retired-redirect
+      service: noop@internal
+
+    cert-retired-https:
+      rule: "Host(`cert.pseudo-lab.com`, `dev-cert.pseudolab-devfactory.com`)"
+      entryPoints:
+        - websecure
+      priority: 1000
+      middlewares:
+        - cert-retired-no-store
+        - cert-retired-redirect
+      service: noop@internal
+      tls:
+        certResolver: le
+
+  middlewares:
+    # Keep this first so it also wraps responses produced by the redirect.
+    cert-retired-no-store:
+      headers:
+        customResponseHeaders:
+          Cache-Control: "no-store"
+    cert-retired-redirect:
+      redirectRegex:
+        regex: "^https?://.*"
+        replacement: "https://pseudo-lab.com/certificates"
+        permanent: false
