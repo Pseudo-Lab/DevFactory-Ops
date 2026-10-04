@@ -1,0 +1,28 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: cert-redirect
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    # Both HTTP and HTTPS go directly to the HTTPS destination with 302.
+    # Disable the controller's separate, permanent HTTP-to-HTTPS redirect.
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/temporal-redirect: "https://pseudo-lab.com/certificates"
+    nginx.ingress.kubernetes.io/custom-headers: "cert-redirect/response-headers"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - cert.pseudo-lab.com
+      secretName: cert-redirect-tls
+  rules:
+    - host: cert.pseudo-lab.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: cert-redirect
+                port:
+                  number: 80

@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: response-headers
+data:
+  Cache-Control: "no-store"
