@@ -13,5 +13,3 @@ controller:
   config:
     use-forwarded-headers: "true"
     compute-full-forwarded-for: "true"
-    # Allow individual ingresses to opt out of response caching.
-    global-allowed-response-headers: "Cache-Control"

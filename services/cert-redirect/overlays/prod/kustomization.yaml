@@ -4,6 +4,11 @@ namespace: cert-redirect
 
 resources:
   - namespace.yaml
-  - response-headers.yaml
+  - deployment.yaml
   - service.yaml
   - ingress.yaml
+
+configMapGenerator:
+  - name: cert-redirect-nginx
+    files:
+      - nginx.conf
