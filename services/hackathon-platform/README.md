@@ -64,6 +64,37 @@ is an operational verification; deployment configuration still comes from Git.
 Mark test events completed and disable test accounts; preserve their audit trail.
 Small-file functional checks do not establish 40-team/20GB peak capacity.
 
+## Pre-merge team-track migration (0010)
+
+The temporary `migration-0010-configmap.yaml` supplies the unmodified Alembic
+revision and SQL from application PR #2, commit
+`cf9f725afbeabc50ea15939d64fc44f6a59c36a3`. The existing migration hook mounts
+only these two files read-only and runs `upgrade head` using the current API
+image. API/web image tags remain unchanged. PR builds do not publish images,
+so this bridge allows migration before the development agent merges #2 then #3.
+The ConfigMap syncs at wave -2 before the migration hook at -1.
+
+Ops reported a verified PostgreSQL 15 backup at
+`soo-server:/var/backups/hackathon-platform/20261005T091354Z/hackathon_platform.dump`,
+SHA-256 `70197650d9022e291a28e9e07b11fd091f2dc485dfe576a8723220efbec6d2c5`.
+The same directory contains `BACKUP-RECORD.txt` and `recover-to-new-db.sh`.
+It covers the database only, not uploaded file bodies. Before syncing, compare
+current revision, event states and table fingerprints with that record; take and
+verify a fresh backup if data changed.
+
+After sync, confirm Argo health/sync, successful migration and revision
+`0010_team_tracks`; compare pre/post existing row data (excluding the new nullable
+`teams.track` field and expected revision change). DevDay must remain draft.
+Report this result before application merges. Successful hooks are deleted by
+Argo, so collect hook status/logs during sync and verify the revision afterwards.
+
+After #2/#3 are deployed with 0010 included in their image, remove this ConfigMap,
+its Kustomization resource entry, and its two mounts/volume from the migration
+patch. Keep the existing upload mount and migration hook. Never downgrade schema.
+DevDay's requested fields are repo/log/PDF required and demo off; inspect and use
+the application's versioned settings operation if adjustment is needed, preserving
+existing submissions and event status.
+
 ## Maintenance and rollback
 
 Run maintenance in the GitOps-managed API container so it uses the same database,
