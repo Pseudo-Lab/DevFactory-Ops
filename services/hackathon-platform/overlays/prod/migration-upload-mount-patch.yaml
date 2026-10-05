@@ -15,7 +15,18 @@ spec:
           volumeMounts:
             - name: uploads
               mountPath: /data/hackathon-uploads
+            - name: migration-0010
+              mountPath: /app/alembic/versions/0010_team_tracks.py
+              subPath: 0010_team_tracks.py
+              readOnly: true
+            - name: migration-0010
+              mountPath: /app/db/0010_team_tracks.sql
+              subPath: 0010_team_tracks.sql
+              readOnly: true
       volumes:
+        - name: migration-0010
+          configMap:
+            name: hackathon-platform-migration-0010
         - name: uploads
           persistentVolumeClaim:
             claimName: hackathon-platform-uploads
