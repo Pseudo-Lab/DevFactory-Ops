@@ -9,26 +9,26 @@ metadata:
 data:
   0010_team_tracks.py: |
     """Add optional team track.
-    
+
     Revision ID: 0010_team_tracks
     Revises: 0009_event_submission_settings
     Create Date: 2026-10-05
     """
-    
+
     from __future__ import annotations
-    
+
     from pathlib import Path
-    
+
     from psycopg import sql
-    
+
     from alembic import op
-    
+
     revision: str = "0010_team_tracks"
     down_revision: str = "0009_event_submission_settings"
     branch_labels: None = None
     depends_on: None = None
-    
-    
+
+
     def upgrade() -> None:
         candidates = (
             parent / "db" / "0010_team_tracks.sql"
@@ -41,8 +41,8 @@ data:
         driver_connection = op.get_bind().connection.driver_connection
         with driver_connection.cursor() as cursor:
             cursor.execute(sql.SQL(migration_sql))
-    
-    
+
+
     def downgrade() -> None:
         raise NotImplementedError("Migrations are forward-only")
   0010_team_tracks.sql: |
