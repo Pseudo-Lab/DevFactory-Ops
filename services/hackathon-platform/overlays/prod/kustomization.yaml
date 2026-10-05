@@ -11,7 +11,6 @@ resources:
   - sealed-secret.yaml
   - ghcr-pull-secret.yaml
   - upload-storage.yaml
-  - migration-0010-configmap.yaml
 
 patches:
   - target:
