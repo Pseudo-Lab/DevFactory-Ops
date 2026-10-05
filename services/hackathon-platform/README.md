@@ -64,36 +64,33 @@ is an operational verification; deployment configuration still comes from Git.
 Mark test events completed and disable test accounts; preserve their audit trail.
 Small-file functional checks do not establish 40-team/20GB peak capacity.
 
-## Pre-merge team-track migration (0010)
+## Team-track migration (0010)
 
-The temporary `migration-0010-configmap.yaml` supplies the unmodified Alembic
-revision and SQL from application PR #2, commit
-`cf9f725afbeabc50ea15939d64fc44f6a59c36a3`. The existing migration hook mounts
-only these two files read-only and runs `upgrade head` using the current API
-image. API/web image tags remain unchanged. PR builds do not publish images,
-so this bridge allows migration before the development agent merges #2 then #3.
-The ConfigMap syncs at wave -2 before the migration hook at -1.
+K3s verification at 2026-10-05 21:06 KST confirmed Ops commit `1b933ff`
+Synced/Healthy, a successful migration hook and revision `0010_team_tracks`.
+All 29 table row counts and existing-data fingerprints were preserved, excluding
+the new nullable `teams.track` column and expected revision change. Existing 26
+teams have NULL tracks; DevDay remains draft. API/web health checks passed.
 
-Ops reported a verified PostgreSQL 15 backup at
+Verified database backup:
 `soo-server:/var/backups/hackathon-platform/20261005T091354Z/hackathon_platform.dump`,
 SHA-256 `70197650d9022e291a28e9e07b11fd091f2dc485dfe576a8723220efbec6d2c5`.
 The same directory contains `BACKUP-RECORD.txt` and `recover-to-new-db.sh`.
-It covers the database only, not uploaded file bodies. Before syncing, compare
-current revision, event states and table fingerprints with that record; take and
-verify a fresh backup if data changed.
+The 20:47 KST pre-migration comparison is recorded in
+`/var/backups/hackathon-platform/20261005T114741Z/baseline-comparison.json`.
+This backup covers the database only, not uploaded file bodies.
 
-After sync, confirm Argo health/sync, successful migration and revision
-`0010_team_tracks`; compare pre/post existing row data (excluding the new nullable
-`teams.track` field and expected revision change). DevDay must remain draft.
-Report this result before application merges. Successful hooks are deleted by
-Argo, so collect hook status/logs during sync and verify the revision afterwards.
+Application main `eea9fed3ee574f5a933fcc81046628d545a07c47` includes 0010;
+the migration hook now uses the image's own migration files. The temporary
+pre-merge ConfigMap and mounts are removed. Keep the upload mount and migration
+hook; never downgrade schema. Image publication and Ops tag updates alone do not
+confirm rollout: check Argo sync/health and running API/web image IDs.
 
-After #2/#3 are deployed with 0010 included in their image, remove this ConfigMap,
-its Kustomization resource entry, and its two mounts/volume from the migration
-patch. Keep the existing upload mount and migration hook. Never downgrade schema.
-DevDay's requested fields are repo/log/PDF required and demo off; inspect and use
-the application's versioned settings operation if adjustment is needed, preserving
-existing submissions and event status.
+DevDay's requested fields are repo/log/PDF required and demo off. At the last
+DB check all four were required (settings version 1); use the application's
+versioned settings operation to adjust them, preserving existing submissions
+and draft status. Verify uploads/downloads, track save/filter and PDF presentation
+controls in a separate test event after rollout.
 
 ## Maintenance and rollback
 
