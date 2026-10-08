@@ -14,9 +14,11 @@ spec:
         - name: api
           resources:
             requests:
-              memory: 1Gi
+              cpu: 500m
+              memory: 2Gi
             limits:
-              memory: 1Gi
+              cpu: "2"
+              memory: 4Gi
           volumeMounts:
             - name: uploads
               mountPath: /data/hackathon-uploads

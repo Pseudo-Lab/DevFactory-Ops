@@ -16,7 +16,7 @@ changes that require migrations.
 - App reservation budget 45,000,000,000 bytes; minimum filesystem free space
   10,000,000,000 bytes. Local PV capacity is a declaration, **not a filesystem
   quota or dedicated disk**. Monitor the shared host filesystem.
-- One API replica/process, memory request/limit 1GiB, UID/GID 10001.
+- One API replica/process, CPU request 500m / limit 2 cores, memory request 2GiB / limit 4GiB, UID/GID 10001. These resources provide headroom for concurrent participant PDF and ZIP uploads.
 - This app's Ingress permits 5m bodies, disables request buffering, and uses
   300-second upstream read/send timeouts. Preserve the `/api` prefix.
 - Sync order: PV/PVC (-3), configuration/secrets (-2), migration Sync hook (-1),
