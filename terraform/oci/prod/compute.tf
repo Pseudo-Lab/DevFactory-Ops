@@ -18,6 +18,8 @@ resource "oci_core_instance" "prod_instance" {
     subnet_id      = oci_core_subnet.prod_subnet.id
     display_name   = "soo-server"
     hostname_label = "soo-server"
+    # Existing NLB backend NSG, managed by terraform/oci/nlb in a separate state.
+    nsg_ids = ["ocid1.networksecuritygroup.oc1.ap-chuncheon-1.aaaaaaaa3sgqirpzvsdhfb34goda4ajf6wgqheyxpe5jx6suh7laxedgvnla"]
   }
 
   metadata = {

@@ -1,0 +1,19 @@
+# Parallel transport endpoint for NLB migration; existing Ingress rules and
+# TLS Secrets are shared, but only the original controller updates status.
+controller:
+  electionID: ingress-nginx-nlb-leader
+  ingressClassResource:
+    enabled: false
+  publishService:
+    enabled: false
+  extraArgs:
+    update-status: "false"
+  admissionWebhooks:
+    enabled: false
+  service:
+    enabled: false
+  config:
+    use-proxy-protocol: "true"
+    proxy-real-ip-cidr: "10.0.0.184/32"
+    use-forwarded-headers: "false"
+    compute-full-forwarded-for: "false"
