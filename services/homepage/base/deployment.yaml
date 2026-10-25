@@ -25,6 +25,10 @@ spec:
       - name: ghcr-creds
       containers:
       - name: api
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "10"]
         securityContext:
           allowPrivilegeEscalation: false
         image: ghcr.io/pseudo-lab/devfactory-homepage-backend # Tag will be managed by Kustomize/CI
@@ -76,6 +80,10 @@ spec:
       - name: ghcr-creds
       containers:
       - name: frontend
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "10"]
         securityContext:
           allowPrivilegeEscalation: false
         image: ghcr.io/pseudo-lab/devfactory-homepage-frontend # Tag will be managed by Kustomize/CI
