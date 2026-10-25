@@ -1,4 +1,6 @@
 controller:
+  admissionWebhooks:
+    failurePolicy: Ignore
   service:
     type: NodePort
     nodePorts:
