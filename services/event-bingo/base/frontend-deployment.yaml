@@ -20,10 +20,20 @@ spec:
         app: event-bingo
         component: frontend
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: ghcr-creds
       containers:
         - name: event-bingo-frontend
+          securityContext:
+            allowPrivilegeEscalation: false
+          lifecycle:
+            preStop:
+              exec:
+                command: ["sleep", "10"]
           image: ghcr.io/pseudo-lab/event-bingo-frontend
           imagePullPolicy: Always
           ports:
