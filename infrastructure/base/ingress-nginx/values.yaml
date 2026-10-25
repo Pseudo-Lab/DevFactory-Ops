@@ -1,6 +1,6 @@
 controller:
   admissionWebhooks:
-    failurePolicy: Ignore
+    enabled: false
   service:
     type: NodePort
     nodePorts:
