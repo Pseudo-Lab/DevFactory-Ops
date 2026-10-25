@@ -17,10 +17,16 @@ spec:
         app: homepage
         component: backend
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
       - name: ghcr-creds
       containers:
       - name: api
+        securityContext:
+          allowPrivilegeEscalation: false
         image: ghcr.io/pseudo-lab/devfactory-homepage-backend # Tag will be managed by Kustomize/CI
         imagePullPolicy: Always
         env:
@@ -36,6 +42,13 @@ spec:
               key: ip-salt
         ports:
         - containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 2
+          periodSeconds: 5
+          timeoutSeconds: 2
 ---
 # Frontend
 apiVersion: apps/v1
@@ -55,11 +68,24 @@ spec:
         app: homepage
         component: frontend
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
       - name: ghcr-creds
       containers:
       - name: frontend
+        securityContext:
+          allowPrivilegeEscalation: false
         image: ghcr.io/pseudo-lab/devfactory-homepage-frontend # Tag will be managed by Kustomize/CI
         imagePullPolicy: Always
         ports:
         - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 2
+          periodSeconds: 5
+          timeoutSeconds: 2
