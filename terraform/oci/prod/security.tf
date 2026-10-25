@@ -48,18 +48,6 @@ resource "oci_core_security_list" "prod_security_list" {
   }
 
   ingress_security_rules {
-    description = "PostgreSQL"
-    protocol    = "6"
-    source      = "0.0.0.0/0"
-    source_type = "CIDR_BLOCK"
-    stateless   = false
-    tcp_options {
-      max = 5432
-      min = 5432
-    }
-  }
-
-  ingress_security_rules {
     description = "빙고 DB, 수현 집"
     protocol    = "6"
     source      = var.home_ip_cidr
