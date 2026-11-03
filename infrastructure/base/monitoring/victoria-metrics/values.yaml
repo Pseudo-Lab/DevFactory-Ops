@@ -51,8 +51,9 @@ vmsingle:
     replicaCount: 1
     resources:
       limits:
-        cpu: 500m
-        memory: 1024Mi
+        # Leave headroom for long-range Grafana queries alongside rule evaluation.
+        cpu: "1"
+        memory: 2048Mi
       requests:
         cpu: 100m
         memory: 512Mi
