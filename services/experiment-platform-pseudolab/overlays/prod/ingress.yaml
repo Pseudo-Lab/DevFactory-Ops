@@ -11,8 +11,28 @@ spec:
     - hosts:
         - exp.pseudolab-devfactory.com
       secretName: experiment-platform-tls
+    - hosts:
+        - iterglow.pseudolab-devfactory.com
+      secretName: iterglow-tls
   rules:
     - host: exp.pseudolab-devfactory.com
+      http:
+        paths:
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: experiment-platform-backend
+                port:
+                  number: 8000
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: experiment-platform-frontend
+                port:
+                  number: 80
+    - host: iterglow.pseudolab-devfactory.com
       http:
         paths:
           - path: /api
