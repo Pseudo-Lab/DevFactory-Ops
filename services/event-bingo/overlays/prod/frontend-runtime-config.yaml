@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: event-bingo-frontend-runtime
+data:
+  runtime-config.json: |
+    {"bingoRealtimeEnabled":false}

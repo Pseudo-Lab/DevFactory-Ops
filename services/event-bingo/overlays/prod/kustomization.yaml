@@ -8,9 +8,12 @@ resources:
 - ingress.yaml
 - ghcr-pull-secret.yaml
 - sealed-secret.yaml
+- frontend-runtime-config.yaml
 
 patches:
 - path: backend-seo-env-patch.yaml
+- path: backend-pool-env-patch.yaml
+- path: frontend-runtime-mount-patch.yaml
 
 commonLabels:
   environment: production
