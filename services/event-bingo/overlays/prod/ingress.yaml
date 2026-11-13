@@ -37,3 +37,10 @@ spec:
                 name: event-bingo-frontend
                 port:
                   number: 80
+          - path: /health(/|$).*
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: event-bingo-backend
+                port:
+                  number: 8000
