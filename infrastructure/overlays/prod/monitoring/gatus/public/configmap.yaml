@@ -81,3 +81,19 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
+      - name: "Event Bingo Supabase Database"
+        group: "Services"
+        url: "https://bingo.pseudolab-devfactory.com/health/db"
+        interval: 6h
+        client:
+          timeout: 15s
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].status == ok"
+        alerts:
+          - type: discord
+            enabled: true
+            failure-threshold: 1
+            success-threshold: 1
+            send-on-resolved: true
+            description: "Bingo database read failed. Check Supabase project status and database connectivity."
