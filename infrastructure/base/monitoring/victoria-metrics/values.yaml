@@ -1,6 +1,69 @@
 # Optimized VictoriaMetrics k8s stack for single-node A1 (ARM64)
 fullnameOverride: vm
 
+# Replace the two late (95%/97%) capacity alerts, preserving forecast/inode rules.
+defaultRules:
+  rules:
+    NodeFilesystemAlmostOutOfSpace:
+      create: false
+    KubeNodePressure:
+      spec:
+        labels:
+          # Alertmanager discards info; only DiskPressure needs escalation here.
+          severity: '{{ if eq $labels.condition "DiskPressure" }}warning{{ else }}info{{ end }}'
+
+additionalVictoriaMetricsMap:
+  node-capacity:
+    groups:
+      - name: node-capacity
+        rules:
+          - alert: NodeFilesystemAlmostOutOfSpace
+            expr: |
+              (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} <= 20
+              ) and (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} > 10
+              ) and (node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0)
+            for: 30m
+            labels:
+              severity: warning
+            annotations:
+              summary: Filesystem has at most 20% space left.
+              description: 'Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.'
+              runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodefilesystemalmostoutofspace
+          - alert: NodeFilesystemAlmostOutOfSpace
+            expr: |
+              (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} <= 10
+              ) and (node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0)
+            for: 30m
+            labels:
+              severity: critical
+            annotations:
+              summary: Filesystem has at most 10% space left.
+              description: 'Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.'
+              runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodefilesystemalmostoutofspace
+
+# k3s exposes volume stats on the API endpoint too, with namespace collisions.
+# Keep the canonical job=kubelet /metrics series used by existing PVC alerts.
+kubeApiServer:
+  vmScrape:
+    spec:
+      endpoints:
+        - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+          port: https
+          scheme: https
+          tlsConfig:
+            caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            serverName: kubernetes
+          metricRelabelConfigs:
+            - action: drop
+              source_labels: [__name__]
+              regex: kubelet_volume_stats_.+
+
 # Enable Alertmanager with custom config secret
 alertmanager:
   enabled: true
