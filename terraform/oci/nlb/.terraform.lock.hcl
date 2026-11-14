@@ -2,8 +2,10 @@
 # Manual edits may be lost in future updates.
 
 provider "registry.terraform.io/oracle/oci" {
-  version = "9.9.0"
+  version     = "9.9.0"
+  constraints = "9.9.0"
   hashes = [
+    "h1:/Tn3czVtM7ucqj4oGJDIAWG8v0juFdRu4zKF58+LbtY=",
     "h1:Pge3W6tn2af2Sda1NWs0Ka/psK4in8R3YuUEDCIHKjg=",
     "zh:11ada80e0683727167016552fd7af462a9d9c4353ba9dbbf44baaa947ad21f5e",
     "zh:19ddc0ffa1d608a168e223bc1cf833d23a030886b4b5b57cdca69b91c9db2fdb",
