@@ -2,6 +2,7 @@
 
 from pathlib import Path
 import subprocess
+import sys
 import tempfile
 
 import yaml
@@ -13,7 +14,9 @@ KUBE_VERSION = "1.32.0"
 
 
 def run(*args):
-    return subprocess.run(args, cwd=ROOT, check=True, text=True, capture_output=True).stdout
+    result = subprocess.run(args, cwd=ROOT, check=True, text=True, capture_output=True)
+    print(result.stderr, end="", file=sys.stderr)
+    return result.stdout
 
 
 def resources(documents):
@@ -32,13 +35,17 @@ def validate():
     paths = set()
     with tempfile.TemporaryDirectory(prefix="ops-ci-") as directory:
         scratch = Path(directory)
-        for manifest in sorted((ROOT / "apps/prod").rglob("*.yaml")):
+        manifests = sorted((ROOT / "apps/prod").rglob("*.yaml"))
+        manifests += sorted((ROOT / "clusters").glob("*.yaml"))
+        for manifest in manifests:
             app = yaml.safe_load(manifest.read_text())
             if not app or app.get("kind") != "Application":
                 continue
             name = app["metadata"]["name"]
             spec = app["spec"]
             sources = spec.get("sources", [spec.get("source", {})])
+            if not sources:
+                raise ValueError(f"{name}: no application sources")
             for index, source in enumerate(sources):
                 rendered = ""
                 if "chart" in source:
@@ -60,6 +67,10 @@ def validate():
                     for value_file in helm.get("valueFiles", []):
                         if not value_file.startswith("$values/"):
                             raise ValueError(f"{name}: expected repository $values path: {value_file}")
+                        if not any(s.get("ref") == "values" and
+                                   s.get("repoURL") == "https://github.com/Pseudo-Lab/DevFactory-Ops.git"
+                                   for s in sources):
+                            raise ValueError(f"{name}: $values requires this repository's ref: values source")
                         options += ["--values", str(ROOT / value_file.removeprefix("$values/"))]
                     if "values" in helm:
                         inline = destination / "inline-values.yaml"
@@ -74,9 +85,16 @@ def validate():
                     if path in paths:
                         continue
                     paths.add(path)
-                    if (path / "kustomization.yaml").is_file():
+                    if any((path / filename).is_file() for filename in
+                           ("kustomization.yaml", "kustomization.yml", "Kustomization")):
                         print(f"Kustomize: {source['path']}", flush=True)
                         rendered = run("kustomize", "build", "--enable-helm", str(path))
+                    else:
+                        print(f"YAML directory: {source['path']}", flush=True)
+                        rendered = "\n".join("---\n" + file.read_text() for file in sorted(path.iterdir())
+                                             if file.suffix in {".yaml", ".yml", ".json"})
+                elif "ref" not in source:
+                    raise ValueError(f"{name}: source requires chart, path or values ref")
                 for resource in resources(yaml.safe_load_all(rendered)):
                     if not resource or resource.get("kind") not in {"VMRule", "PrometheusRule"}:
                         continue
@@ -88,7 +106,7 @@ def validate():
                                    if key not in {"params", "concurrency"}}
                                   for group in groups]
                     rule_count += sum(len(group["rules"]) for group in groups)
-                    rules = scratch / "rules.yaml"
+                    rules = scratch / f"{name}-{resource['metadata']['name']}-rules.yaml"
                     rules.write_text(yaml.safe_dump({"groups": groups}))
                     print(run("promtool", "check", "rules", str(rules)), end="", flush=True)
         if not chart_count or not rule_count:

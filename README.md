@@ -70,8 +70,8 @@ clusters/prod.yaml  (root-app)
 
 `Validate Manifests`는 모든 main 대상 PR과 main push에서 다음을 검사합니다.
 
-- 인프라·서비스 overlay 및 ArgoCD Application의 Kustomize 경로를 빌드합니다. Loki·Promtail처럼 `helmCharts`를 사용하는 경로도 포함합니다.
-- Application에 선언된 Helm 차트 버전, release 이름, namespace, values 적용 순서로 `helm lint`와 `helm template`를 실행합니다. 새 Helm override 옵션은 검증 코드에 반영하기 전까지 실패 처리합니다.
+- 인프라·서비스 overlay 및 ArgoCD Application의 Kustomize 경로를 빌드합니다. Loki·Promtail처럼 `helmCharts`를 사용하는 경로도 포함하며, 일반 YAML 디렉터리 소스도 파싱합니다. 다운로드한 monitoring chart는 Git에서 제외합니다.
+- Application에 선언된 Helm 차트 버전, release 이름, namespace, values 적용 순서로 `helm lint`와 `helm template`를 실행합니다. `$values`가 이 저장소의 `ref: values`에 연결되는지도 검사합니다. 새 Helm override 옵션은 검증 코드에 반영하기 전까지 실패 처리합니다.
 - 렌더링된 `VMRule`·`PrometheusRule`의 규칙을 `promtool check rules`로 검사합니다. VM 전용 group 옵션인 `params`·`concurrency`는 검사본에서 제외하며 검증 대상이 아닙니다. 차트나 규칙이 전혀 검사되지 않으면 실패합니다.
 - Terraform 두 root(`terraform/oci/prod`, `terraform/oci/nlb`)의 format과 provider 기반 구성을 검사합니다. `init -backend=false -lockfile=readonly`를 사용하며 운영 state·자격증명, plan·apply는 사용하지 않습니다.
 
