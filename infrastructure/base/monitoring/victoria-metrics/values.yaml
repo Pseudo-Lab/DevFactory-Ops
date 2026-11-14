@@ -13,6 +13,34 @@ defaultRules:
           severity: '{{ if eq $labels.condition "DiskPressure" }}warning{{ else }}info{{ end }}'
 
 additionalVictoriaMetricsMap:
+  cluster-backup:
+    groups:
+      - name: cluster-backup
+        rules:
+          - alert: ClusterBackupFailed
+            expr: ops_cluster_backup_success == 0
+            for: 20m
+            labels:
+              severity: warning
+            annotations:
+              summary: Daily encrypted cluster backup failed or timed out.
+              description: Check systemctl status ops-cluster-backup.service on soo-server. Do not delete older backups before a verified upload.
+          - alert: ClusterBackupMissing
+            expr: (time() - ops_cluster_backup_last_success_timestamp_seconds > 30 * 3600) or absent(ops_cluster_backup_last_success_timestamp_seconds)
+            for: 15m
+            labels:
+              severity: warning
+            annotations:
+              summary: No successful cluster backup within 30 hours.
+              description: Check the backup timer, OCI access and node-exporter textfile collector.
+          - alert: ClusterBackupStorageBudget
+            expr: ops_cluster_backup_stored_bytes > 6000000000
+            for: 15m
+            labels:
+              severity: warning
+            annotations:
+              summary: Cluster backup bucket exceeds its 6 GB warning threshold.
+              description: Uploads stop before total storage exceeds 8 GB. Inspect retained and incomplete objects.
   node-capacity:
     groups:
       - name: node-capacity
@@ -139,6 +167,11 @@ kubeStateMetrics:
 
 prometheus-node-exporter:
   enabled: true
+  extraArgs:
+    # Helm replaces the list, so preserve the chart's filesystem exclusions.
+    - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+    - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|erofs|sysfs|tracefs)$
+    - --collector.textfile.directory=/host/root/var/lib/node_exporter/textfile_collector
   resources:
     limits:
       cpu: 250m

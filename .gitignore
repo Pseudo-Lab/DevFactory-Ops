@@ -30,3 +30,7 @@ docs/*
 
 # Local secret scripts
 scripts/ops/secrets.env
+
+# Python test bytecode
+__pycache__/
+*.py[cod]
