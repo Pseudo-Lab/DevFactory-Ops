@@ -63,6 +63,9 @@ jobs:
       - name: Validate Argo applications and monitoring rules
         run: python scripts/ci/validate-applications.py
 
+      - name: Test cluster backup failure and retention handling
+        run: python -m unittest discover -s scripts/backup -p 'test_*.py'
+
   terraform:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -77,7 +80,7 @@ jobs:
         env:
           TF_IN_AUTOMATION: 'true'
         run: |
-          for dir in terraform/oci/prod terraform/oci/nlb; do
+          for dir in terraform/oci/prod terraform/oci/nlb terraform/oci/backup; do
             terraform -chdir="$dir" init -backend=false -input=false -lockfile=readonly
             terraform -chdir="$dir" validate -no-color
           done
