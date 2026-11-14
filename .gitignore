@@ -3,6 +3,9 @@
 *.tfstate
 *.tfstate.backup
 
+# Downloaded by the monitoring Kustomize Helm build
+infrastructure/base/monitoring/charts/
+
 # Sensitive variable files
 *.tfvars
 *.tfvars.json
