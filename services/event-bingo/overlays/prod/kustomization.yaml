@@ -11,6 +11,7 @@ resources:
 
 patches:
 - path: backend-seo-env-patch.yaml
+- path: backend-pool-env-patch.yaml
 
 commonLabels:
   environment: production
