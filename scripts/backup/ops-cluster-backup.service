@@ -1,0 +1,21 @@
+[Unit]
+Description=Encrypted k3s backup to private OCI Object Storage
+After=network-online.target k3s.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+RuntimeDirectory=ops-cluster-backup
+RuntimeDirectoryMode=0700
+ExecStart=/opt/ops-cluster-backup/venv/bin/python /opt/ops-cluster-backup/backup.py
+TimeoutStartSec=15min
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/ops-cluster-backup /var/lib/node_exporter/textfile_collector

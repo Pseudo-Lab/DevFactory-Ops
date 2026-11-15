@@ -1,6 +1,97 @@
 # Optimized VictoriaMetrics k8s stack for single-node A1 (ARM64)
 fullnameOverride: vm
 
+# Replace the two late (95%/97%) capacity alerts, preserving forecast/inode rules.
+defaultRules:
+  rules:
+    NodeFilesystemAlmostOutOfSpace:
+      create: false
+    KubeNodePressure:
+      spec:
+        labels:
+          # Alertmanager discards info; only DiskPressure needs escalation here.
+          severity: '{{ if eq $labels.condition "DiskPressure" }}warning{{ else }}info{{ end }}'
+
+additionalVictoriaMetricsMap:
+  cluster-backup:
+    groups:
+      - name: cluster-backup
+        rules:
+          - alert: ClusterBackupFailed
+            expr: ops_cluster_backup_success == 0
+            for: 20m
+            labels:
+              severity: warning
+            annotations:
+              summary: Daily encrypted cluster backup failed or timed out.
+              description: Check systemctl status ops-cluster-backup.service on soo-server. Do not delete older backups before a verified upload.
+          - alert: ClusterBackupMissing
+            expr: (time() - ops_cluster_backup_last_success_timestamp_seconds > 30 * 3600) or absent(ops_cluster_backup_last_success_timestamp_seconds)
+            for: 15m
+            labels:
+              severity: warning
+            annotations:
+              summary: No successful cluster backup within 30 hours.
+              description: Check the backup timer, OCI access and node-exporter textfile collector.
+          - alert: ClusterBackupStorageBudget
+            expr: ops_cluster_backup_stored_bytes > 6000000000
+            for: 15m
+            labels:
+              severity: warning
+            annotations:
+              summary: Cluster backup bucket exceeds its 6 GB warning threshold.
+              description: Uploads stop before total storage exceeds 8 GB. Inspect retained and incomplete objects.
+  node-capacity:
+    groups:
+      - name: node-capacity
+        rules:
+          - alert: NodeFilesystemAlmostOutOfSpace
+            expr: |
+              (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} <= 20
+              ) and (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} > 10
+              ) and (node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0)
+            for: 30m
+            labels:
+              severity: warning
+            annotations:
+              summary: Filesystem has at most 20% space left.
+              description: 'Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.'
+              runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodefilesystemalmostoutofspace
+          - alert: NodeFilesystemAlmostOutOfSpace
+            expr: |
+              (
+                100 * node_filesystem_avail_bytes{job="node-exporter",fstype!="",mountpoint!=""}
+                / node_filesystem_size_bytes{job="node-exporter",fstype!="",mountpoint!=""} <= 10
+              ) and (node_filesystem_readonly{job="node-exporter",fstype!="",mountpoint!=""} == 0)
+            for: 30m
+            labels:
+              severity: critical
+            annotations:
+              summary: Filesystem has at most 10% space left.
+              description: 'Filesystem on {{ $labels.device }}, mounted on {{ $labels.mountpoint }}, at {{ $labels.instance }} has only {{ printf "%.2f" $value }}% available space left.'
+              runbook_url: https://runbooks.prometheus-operator.dev/runbooks/node/nodefilesystemalmostoutofspace
+
+# k3s exposes volume stats on the API endpoint too, with namespace collisions.
+# Keep the canonical job=kubelet /metrics series used by existing PVC alerts.
+kubeApiServer:
+  vmScrape:
+    spec:
+      endpoints:
+        - bearerTokenFile: /var/run/secrets/kubernetes.io/serviceaccount/token
+          port: https
+          scheme: https
+          tlsConfig:
+            caFile: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            serverName: kubernetes
+          metricRelabelConfigs:
+            - action: drop
+              source_labels: [__name__]
+              regex: kubelet_volume_stats_.+
+
 # Enable Alertmanager with custom config secret
 alertmanager:
   enabled: true
@@ -51,8 +142,9 @@ vmsingle:
     replicaCount: 1
     resources:
       limits:
-        cpu: 500m
-        memory: 1024Mi
+        # Leave headroom for long-range Grafana queries alongside rule evaluation.
+        cpu: "1"
+        memory: 2048Mi
       requests:
         cpu: 100m
         memory: 512Mi
@@ -75,6 +167,11 @@ kubeStateMetrics:
 
 prometheus-node-exporter:
   enabled: true
+  extraArgs:
+    # Helm replaces the list, so preserve the chart's filesystem exclusions.
+    - --collector.filesystem.ignored-mount-points=^/(dev|proc|sys|var/lib/docker/.+|var/lib/kubelet/.+)($|/)
+    - --collector.filesystem.ignored-fs-types=^(autofs|binfmt_misc|bpf|cgroup2?|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|iso9660|mqueue|nsfs|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|selinuxfs|squashfs|erofs|sysfs|tracefs)$
+    - --collector.textfile.directory=/host/root/var/lib/node_exporter/textfile_collector
   resources:
     limits:
       cpu: 250m

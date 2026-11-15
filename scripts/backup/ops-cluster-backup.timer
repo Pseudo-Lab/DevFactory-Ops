@@ -1,0 +1,11 @@
+[Unit]
+Description=Daily cluster backup at 03:00 Korea time
+
+[Timer]
+OnCalendar=*-*-* 03:00:00 Asia/Seoul
+RandomizedDelaySec=5min
+Persistent=true
+Unit=ops-cluster-backup.service
+
+[Install]
+WantedBy=timers.target

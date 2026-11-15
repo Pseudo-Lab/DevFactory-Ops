@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx-nlb-validation
+  namespace: ingress-nginx
+  labels:
+    purpose: devday-nlb-validation
+spec:
+  type: NodePort
+  externalTrafficPolicy: Local
+  selector:
+    app.kubernetes.io/component: controller
+    app.kubernetes.io/instance: ingress-nginx-nlb
+    app.kubernetes.io/name: ingress-nginx
+  ports:
+    - name: http
+      port: 80
+      targetPort: http
+      nodePort: 31080
+    - name: https
+      port: 443
+      targetPort: https
+      nodePort: 31443
+    - name: health
+      port: 10254
+      targetPort: 10254
+      nodePort: 31081

@@ -81,3 +81,42 @@ data:
         interval: 5m
         conditions:
           - "[STATUS] == 200"
+      - name: "Event Bingo Supabase Database"
+        group: "Services"
+        url: "https://bingo.pseudolab-devfactory.com/health/db"
+        interval: 6h
+        client:
+          timeout: 15s
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY].status == ok"
+        alerts:
+          - type: discord
+            enabled: true
+            failure-threshold: 1
+            success-threshold: 1
+            send-on-resolved: true
+            description: "Bingo database read failed. Check Supabase project status and database connectivity."
+      - name: "Event Bingo Development Supabase Database"
+        group: "Development"
+        url: "${BINGO_DEV_SUPABASE_URL}/rest/v1/rpc/bingo_monitor_health"
+        method: GET
+        headers:
+          apikey: "${BINGO_DEV_SUPABASE_ANON_KEY}"
+        interval: 6h
+        client:
+          timeout: 15s
+        ui:
+          hide-url: true
+          hide-hostname: true
+          hide-errors: true
+        conditions:
+          - "[STATUS] == 200"
+          - "[BODY] == 1"
+        alerts:
+          - type: discord
+            enabled: true
+            failure-threshold: 1
+            success-threshold: 1
+            send-on-resolved: true
+            description: "Bingo development database read failed. Check development Supabase status, API credentials and health function."

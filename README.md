@@ -65,3 +65,16 @@ clusters/prod.yaml  (root-app)
 ## 📚 문서
 
 - [인프라 셋업 가이드](docs/setup.md) — OCI 계정 준비, Terraform, k3s 부트스트랩, ArgoCD 활성화
+
+## CI 검증
+
+`Validate Manifests`는 모든 main 대상 PR과 main push에서 다음을 검사합니다.
+
+- 인프라·서비스 overlay 및 ArgoCD Application의 Kustomize 경로를 빌드합니다. Loki·Promtail처럼 `helmCharts`를 사용하는 경로도 포함하며, 일반 YAML 디렉터리 소스도 파싱합니다. 다운로드한 monitoring chart는 Git에서 제외합니다.
+- Application에 선언된 Helm 차트 버전, release 이름, namespace, values 적용 순서로 `helm lint`와 `helm template`를 실행합니다. `$values`가 이 저장소의 `ref: values`에 연결되는지도 검사합니다. 새 Helm override 옵션은 검증 코드에 반영하기 전까지 실패 처리합니다.
+- 렌더링된 `VMRule`·`PrometheusRule`의 규칙을 `promtool check rules`로 검사합니다. VM 전용 group 옵션인 `params`·`concurrency`는 검사본에서 제외하며 검증 대상이 아닙니다. 차트나 규칙이 전혀 검사되지 않으면 실패합니다.
+- Terraform 두 root(`terraform/oci/prod`, `terraform/oci/nlb`)의 format과 provider 기반 구성을 검사합니다. `init -backend=false -lockfile=readonly`를 사용하며 운영 state·자격증명, plan·apply는 사용하지 않습니다.
+
+Helm·Kustomize·promtool과 PyYAML을 설치한 뒤 `python scripts/ci/validate-applications.py`로 Application 검사를 로컬에서도 실행할 수 있습니다. 도구 버전은 `.github/workflows/validate.yml`에 고정하며, 렌더링의 Kubernetes 기준은 운영 k3s에 맞춘 1.32입니다.
+
+이 검사는 차트 렌더링·규칙 문법·Terraform 구성 검증입니다. 실제 클러스터의 admission 검증, 경보의 발생 조건 검증, Terraform 변경 계획을 대신하지 않으며 GitHub 필수 검사 설정은 별도로 관리합니다. Helm chart에 schema가 없는 경우 사용하지 않는 values 키까지 검출하지는 못합니다.

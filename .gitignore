@@ -3,6 +3,9 @@
 *.tfstate
 *.tfstate.backup
 
+# Downloaded by the monitoring Kustomize Helm build
+infrastructure/base/monitoring/charts/
+
 # Sensitive variable files
 *.tfvars
 *.tfvars.json
@@ -27,3 +30,7 @@ docs/*
 
 # Local secret scripts
 scripts/ops/secrets.env
+
+# Python test bytecode
+__pycache__/
+*.py[cod]

@@ -6,3 +6,4 @@ resources:
   - backend-deployment.yaml
   - backend-service.yaml
   - vm-service-scrape.yaml
+  - network-policy.yaml

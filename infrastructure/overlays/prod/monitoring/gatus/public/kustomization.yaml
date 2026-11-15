@@ -17,6 +17,22 @@ patches:
       - op: replace
         path: /spec/template/spec/volumes/0/configMap/name
         value: gatus-config-public
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: BINGO_DEV_SUPABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: bingo-dev-db-monitor
+              key: BINGO_DEV_SUPABASE_URL
+      - op: add
+        path: /spec/template/spec/containers/0/env/-
+        value:
+          name: BINGO_DEV_SUPABASE_ANON_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bingo-dev-db-monitor
+              key: BINGO_DEV_SUPABASE_ANON_KEY
   - target:
       kind: Ingress
       name: gatus

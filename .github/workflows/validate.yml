@@ -1,5 +1,8 @@
 name: Validate Manifests
 
+permissions:
+  contents: read
+
 on:
   push:
     branches: [ "main" ]
@@ -9,6 +12,7 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -18,12 +22,32 @@ jobs:
         with:
           kustomize-version: "5.4.2"
 
+      - uses: azure/setup-helm@v4.3.0
+        with:
+          version: v3.17.3
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install validation tools
+        run: |
+          python -m pip install PyYAML==6.0.3
+          cd "$RUNNER_TEMP"
+          base=https://github.com/prometheus/prometheus/releases/download/v3.5.0
+          archive=prometheus-3.5.0.linux-amd64.tar.gz
+          curl -fsSLO "$base/$archive"
+          curl -fsSLO "$base/sha256sums.txt"
+          grep " $archive\$" sha256sums.txt | sha256sum --check --strict
+          tar -xzf "$archive" prometheus-3.5.0.linux-amd64/promtool
+          echo "$RUNNER_TEMP/prometheus-3.5.0.linux-amd64" >> "$GITHUB_PATH"
+
       - name: Validate Infrastructure Manifests
         run: |
           for dir in infrastructure/overlays/*; do
             if [ -d "$dir" ]; then
               echo "Validating $dir..."
-              kustomize build "$dir" > /dev/null
+              kustomize build --enable-helm "$dir" > /dev/null
             fi
           done
 
@@ -32,6 +56,31 @@ jobs:
           for dir in services/*/overlays/*; do
             if [ -d "$dir" ]; then
               echo "Validating $dir..."
-              kustomize build "$dir" > /dev/null
+              kustomize build --enable-helm "$dir" > /dev/null
             fi
+          done
+
+      - name: Validate Argo applications and monitoring rules
+        run: python scripts/ci/validate-applications.py
+
+      - name: Test cluster backup failure and retention handling
+        run: python -m unittest discover -s scripts/backup -p 'test_*.py'
+
+  terraform:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.14.4
+      - name: Check formatting
+        run: terraform fmt -check -recursive terraform
+      - name: Validate without accessing remote state
+        env:
+          TF_IN_AUTOMATION: 'true'
+        run: |
+          for dir in terraform/oci/prod terraform/oci/nlb terraform/oci/backup; do
+            terraform -chdir="$dir" init -backend=false -input=false -lockfile=readonly
+            terraform -chdir="$dir" validate -no-color
           done
