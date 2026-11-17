@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: data-initiative-newsletter
+resources:
+  - ../../base
+  - namespace.yaml
+  - ingress.yaml
+  - sealed-secret.yaml
+  - ghcr-pull-secret.yaml
+images:
+  - name: ghcr.io/soohyunme/data-initiative-newsletter
+    digest: sha256:8a3ae0229c4c6403442897b77269d997d2476f35d7b175b007ea9d3c41f6428a

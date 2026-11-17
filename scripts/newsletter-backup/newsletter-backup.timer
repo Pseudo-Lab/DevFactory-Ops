@@ -1,0 +1,7 @@
+[Unit]
+Description=Daily newsletter backup
+[Timer]
+OnCalendar=*-*-* 03:20:00 Asia/Seoul
+Persistent=true
+[Install]
+WantedBy=timers.target

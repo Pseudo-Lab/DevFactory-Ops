@@ -1,0 +1,7 @@
+[Unit]
+Description=Encrypted dedicated newsletter DB backup
+[Service]
+Type=oneshot
+User=root
+UMask=0077
+ExecStart=/opt/ops-cluster-backup/venv/bin/python /opt/newsletter-backup/backup.py

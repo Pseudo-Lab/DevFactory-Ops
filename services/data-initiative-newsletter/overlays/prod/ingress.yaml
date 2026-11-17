@@ -1,0 +1,36 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: data-initiative-newsletter
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/enable-access-log: "false"
+    nginx.ingress.kubernetes.io/proxy-body-size: "4k"
+    nginx.ingress.kubernetes.io/limit-rpm: "30"
+    nginx.ingress.kubernetes.io/limit-burst-multiplier: "2"
+    nginx.ingress.kubernetes.io/limit-connections: "10"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts:
+        - subscribe.pseudolab-devfactory.com
+      secretName: data-initiative-newsletter-tls
+  rules:
+    - host: subscribe.pseudolab-devfactory.com
+      http:
+        paths:
+          - path: /api/v1/newsletter/subscribe
+            pathType: Exact
+            backend:
+              service:
+                name: data-initiative-newsletter
+                port:
+                  name: http
+          - path: /api/v1/newsletter/unsubscribe
+            pathType: Exact
+            backend:
+              service:
+                name: data-initiative-newsletter
+                port:
+                  name: http

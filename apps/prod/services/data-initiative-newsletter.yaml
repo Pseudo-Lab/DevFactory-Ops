@@ -1,0 +1,30 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: data-initiative-newsletter
+  namespace: argocd
+  finalizers:
+    - resources-finalizer.argocd.argoproj.io
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/Pseudo-Lab/DevFactory-Ops.git
+    targetRevision: main
+    path: services/data-initiative-newsletter/overlays/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: data-initiative-newsletter
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      name: data-initiative-newsletter
+      namespace: data-initiative-newsletter
+      jsonPointers:
+        - /spec/template/metadata/annotations/reloader.stakater.com~1last-reloaded-from
