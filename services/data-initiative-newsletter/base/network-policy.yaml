@@ -43,6 +43,12 @@ spec:
         # Recheck this address after host reboot or DB container recreation.
         - ipBlock:
             cidr: 172.20.0.2/32
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: shared-postgresql
+          podSelector:
+            matchLabels:
+              app: shared-postgresql
       ports:
         - protocol: TCP
           port: 5432
