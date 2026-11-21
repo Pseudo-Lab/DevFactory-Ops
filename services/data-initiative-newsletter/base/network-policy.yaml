@@ -37,12 +37,6 @@ spec:
         - protocol: TCP
           port: 53
     - to:
-        - ipBlock:
-            cidr: 10.0.0.158/32
-        # Docker DNAT changes the DB destination before egress policy evaluation.
-        # Recheck this address after host reboot or DB container recreation.
-        - ipBlock:
-            cidr: 172.20.0.2/32
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: shared-postgresql

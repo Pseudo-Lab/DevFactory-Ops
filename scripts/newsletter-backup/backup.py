@@ -44,10 +44,10 @@ def main():
         with tempfile.TemporaryDirectory(prefix='newsletter-',dir='/run') as temp:
             dump = Path(temp)/'db.dump'
             with dump.open('wb') as out:
-                r = subprocess.run(['docker','exec','devfactory-postgres','sh','-c','exec pg_dump -U "$POSTGRES_USER" -d data_initiative_newsletter -Fc --no-owner --no-acl'],stdout=out,stderr=subprocess.DEVNULL)
+                r = subprocess.run(['/usr/local/bin/k3s','kubectl','exec','-n','shared-postgresql','shared-postgresql-0','--','sh','-c','exec pg_dump -U "$POSTGRES_USER" -d data_initiative_newsletter -Fc --no-owner --no-acl'],stdout=out,stderr=subprocess.DEVNULL)
             if r.returncode: raise RuntimeError('Dedicated database dump failed')
             with dump.open('rb') as source:
-                subprocess.run(['docker','exec','-i','devfactory-postgres','pg_restore','--list'],stdin=source,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True)
+                subprocess.run(['/usr/local/bin/k3s','kubectl','exec','-i','-n','shared-postgresql','shared-postgresql-0','--','pg_restore','--list'],stdin=source,stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True)
             encrypted = Path(temp)/'db.dump.age'
             subprocess.run(['/opt/ops-cluster-backup/age','-r',c['recipient'],'-o',str(encrypted),str(dump)],stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL,check=True)
             checksum=hashlib.sha256(encrypted.read_bytes()).hexdigest()

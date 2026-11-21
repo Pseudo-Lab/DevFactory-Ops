@@ -37,8 +37,11 @@ The local PV requires this node and directory to survive; moving the workload
 to another node requires a planned data migration. Files are private application
 data; never add a static web route to the directory.
 
-The existing PostgreSQL 15 database `hackathon_platform` is hosted by
-`devfactory-postgres`; credentials remain in the existing SealedSecret.
+The PostgreSQL 15 database `hackathon_platform` is hosted by the internal
+`shared-postgresql.shared-postgresql.svc.cluster.local:5432` Service. The
+StatefulSet and retained PVC are managed under `services/postgresql`;
+credentials remain in the existing SealedSecret. The Docker source is retained
+for recovery and must not receive new production writes after cutover.
 Before schema changes, save a custom-format `pg_dump` with restrictive file
 permissions under `/var/backups/hackathon-platform/<UTC timestamp>/`, record its
 SHA-256, and verify `pg_restore` into an isolated database. Use `--no-owner
