@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: shared-postgresql
+  labels:
+    app: shared-postgresql
+  annotations:
+    argocd.argoproj.io/sync-wave: "-2"
+spec:
+  podSelector:
+    matchLabels:
+      app: shared-postgresql
+  policyTypes:
+    - Ingress
+    - Egress
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: data-initiative-newsletter
+          podSelector:
+            matchLabels:
+              app: data-initiative-newsletter
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: hackathon-platform
+          podSelector:
+            matchLabels:
+              app: hackathon-platform
+            matchExpressions:
+              - key: component
+                operator: In
+                values:
+                  - api
+                  - migration
+      ports:
+        - protocol: TCP
+          port: 5432
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - protocol: UDP
+          port: 53
+        - protocol: TCP
+          port: 53
