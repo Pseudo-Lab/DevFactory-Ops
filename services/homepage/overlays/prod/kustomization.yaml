@@ -19,4 +19,4 @@ images:
   newTag: sha-ea286c1
 - name: ghcr.io/pseudo-lab/devfactory-homepage-frontend
   newName: ghcr.io/pseudo-lab/devfactory-homepage-frontend
-  newTag: sha-ea286c1
+  newTag: sha-6dc8b6b
