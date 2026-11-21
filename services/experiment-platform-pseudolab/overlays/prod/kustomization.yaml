@@ -13,7 +13,7 @@ commonLabels:
 images:
   - name: ghcr.io/pseudo-lab/experiment-platform-pseudolab-frontend
     newName: ghcr.io/pseudo-lab/iterglow-frontend
-    newTag: a64bdf6be271870e2aecdd669ea6b063daf1a4fa
+    newTag: 4c1654fb6b841ace77097fa3f88d1c6a8afaafbb
   - name: ghcr.io/pseudo-lab/experiment-platform-pseudolab-backend
     newName: ghcr.io/pseudo-lab/iterglow-backend
-    newTag: a64bdf6be271870e2aecdd669ea6b063daf1a4fa
+    newTag: 4c1654fb6b841ace77097fa3f88d1c6a8afaafbb
