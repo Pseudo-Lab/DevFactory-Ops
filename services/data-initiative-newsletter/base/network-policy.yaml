@@ -40,9 +40,9 @@ spec:
         - ipBlock:
             cidr: 10.0.0.158/32
         # Docker DNAT changes the DB destination before egress policy evaluation.
-        # Recheck this address if the existing DB container is recreated.
+        # Recheck this address after host reboot or DB container recreation.
         - ipBlock:
-            cidr: 172.20.0.3/32
+            cidr: 172.20.0.2/32
       ports:
         - protocol: TCP
           port: 5432
