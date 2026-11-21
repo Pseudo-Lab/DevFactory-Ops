@@ -17,3 +17,19 @@ images:
   - name: ghcr.io/pseudo-lab/experiment-platform-pseudolab-backend
     newName: ghcr.io/pseudo-lab/iterglow-backend
     newTag: 4c1654fb6b841ace77097fa3f88d1c6a8afaafbb
+
+# Select the approved Google account by its immutable internal ID.
+patches:
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: experiment-platform-backend
+      spec:
+        template:
+          spec:
+            containers:
+              - name: backend
+                env:
+                  - name: ADMIN_ACCOUNT_ID
+                    value: "0e6075e1-af12-4c1f-984e-fa9e93d4291e"
