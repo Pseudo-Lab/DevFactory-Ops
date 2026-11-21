@@ -70,6 +70,8 @@ class BackupTests(unittest.TestCase):
         self.assertEqual(len(dump),1)
         self.assertIn("-d data_initiative_newsletter",dump[0][-1])
         self.assertNotIn("pg_dumpall",dump[0][-1])
+        self.assertEqual(dump[0][:7], ["/usr/local/bin/k3s", "kubectl", "exec", "-n", "shared-postgresql", "shared-postgresql-0", "--"])
+        self.assertFalse(any("devfactory-postgres" in cmd for cmd in cmds))
 
     def test_checksum_failure_does_not_report_success(self):
         _,_,e,success=self.exercise(bad_checksum=True)
